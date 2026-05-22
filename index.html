@@ -1098,16 +1098,16 @@
     .cm-value-row:hover { background: rgba(38,33,68,0.04); }
     .cm-value-pill {
       display: inline-flex; align-items: center;
-      background: rgba(230,17,104,0.08);
-      border: 1px solid #e61168; border-radius: 6px;
-      padding: 3px 8px; color: #e61168;
+      background: #fff;
+      border: 1px solid; border-radius: 6px;
+      padding: 3px 8px;
       font-size: 13px; font-weight: 500; line-height: 18px;
     }
     .cm-selected-badge {
       display: inline-flex; align-items: center;
-      background: rgba(230,17,104,0.08);
-      border: 1px solid #e61168; border-radius: 6px;
-      padding: 2px 8px; color: #e61168;
+      background: #fff;
+      border: 1px solid; border-radius: 6px;
+      padding: 2px 8px;
       font-size: 13px; font-weight: 500; flex-shrink: 0;
     }
 
@@ -1539,7 +1539,7 @@
   ];
 
   var CUSTOM_META = [
-    { name: 'Keyword',     color: '#5a8be8', dotBg: '#eef6fe', values: ['Assignee', 'Guides', 'Team'] },
+    { name: 'Keyword',     color: '#e61168', dotBg: '#ffe0ed', values: ['Assignee', 'Guides', 'Team'] },
     { name: 'Category',    color: '#2c9f72', dotBg: '#e8f9f0', values: ['Support', 'Sales', 'Marketing'] },
     { name: 'Information', color: '#5a8be8', dotBg: '#eef6fe', values: ['Product', 'Engineering', 'Design'] }
   ];
@@ -1685,12 +1685,14 @@
     if (titleEl) titleEl.textContent = fieldName;
     var field = CUSTOM_META.filter(function(f) { return f.name === fieldName; })[0];
     if (field && itemsEl) {
+      var c = field.color;
       var html = '<div style="padding:0 8px 8px;">';
       field.values.forEach(function(v) {
         var safeV  = v.replace(/'/g, "\\'");
         var safeFn = fieldName.replace(/'/g, "\\'");
-        html += '<div class="cm-value-row" onclick="selectCMValue(event,\'' + rowId + '\',\'' + safeFn + '\',\'' + safeV + '\')">' +
-          '<span class="cm-value-pill">' + v + '</span>' +
+        var safeC  = c.replace(/'/g, "\\'");
+        html += '<div class="cm-value-row" onclick="selectCMValue(event,\'' + rowId + '\',\'' + safeFn + '\',\'' + safeV + '\',\'' + safeC + '\')">' +
+          '<span class="cm-value-pill" style="border-color:' + c + ';color:' + c + ';">' + v + '</span>' +
           '</div>';
       });
       html += '</div>';
@@ -1706,12 +1708,13 @@
     if (valuesEl) valuesEl.style.display = 'none';
   }
 
-  function selectCMValue(event, rowId, fieldName, value) {
+  function selectCMValue(event, rowId, fieldName, value, color) {
     event.stopPropagation();
     var trigger = document.getElementById('picker-trigger-' + rowId);
     if (trigger) {
       var arrowHtml = trigger.querySelector('.value-trigger-arrow').outerHTML;
-      trigger.innerHTML = '<span class="cm-selected-badge">' + value + '</span>' + arrowHtml;
+      var style = color ? 'border-color:' + color + ';color:' + color + ';' : '';
+      trigger.innerHTML = '<span class="cm-selected-badge" style="' + style + '">' + value + '</span>' + arrowHtml;
     }
     closePickerDropdown(rowId);
   }
@@ -1735,6 +1738,145 @@
     });
   }
 
+  function buildCMMetaPicker(rowId) {
+    var itemsHtml = '';
+    CUSTOM_META.forEach(function(field) {
+      var safe = field.name.replace(/'/g, "\\'");
+      itemsHtml += '<div class="cm-field-item" onclick="selectMetadataField(event,\'' + rowId + '\',\'' + safe + '\')">' +
+        '<span class="cm-field-dot" style="background:' + field.dotBg + ';border-color:' + field.color + ';"></span>' +
+        '<span>' + field.name + '</span>' +
+        '</div>';
+    });
+    return '<div class="value-trigger" id="cm-meta-trigger-' + rowId + '" onclick="toggleCMMetaDropdown(\'' + rowId + '\')">' +
+        '<span class="val-lead-icon" id="cm-meta-icon-' + rowId + '"></span>' +
+        '<span class="value-trigger-label" id="cm-meta-label-' + rowId + '">Choose metadata</span>' +
+        '<span class="value-trigger-arrow">' + CARET_SVG + '</span>' +
+      '</div>' +
+      '<div class="picker-dropdown" id="cm-meta-dropdown-' + rowId + '">' +
+        '<div class="picker-search-bar">' +
+          '<span class="fields-search-icon">' + SEARCH_SVG + '</span>' +
+          '<input class="picker-search-input" placeholder="Search" oninput="filterCMMetaItems(\'' + rowId + '\',this.value)">' +
+        '</div>' +
+        '<div id="cm-meta-items-' + rowId + '" style="padding:0 8px 8px;">' +
+          itemsHtml +
+        '</div>' +
+      '</div>';
+  }
+
+  function openCMMetaDropdown(rowId) {
+    closeAllDropdowns();
+    var dd = document.getElementById('cm-meta-dropdown-' + rowId);
+    var tr = document.getElementById('cm-meta-trigger-' + rowId);
+    if (dd) dd.classList.add('is-open');
+    if (tr) tr.classList.add('is-open');
+  }
+  function closeCMMetaDropdown(rowId) {
+    var dd = document.getElementById('cm-meta-dropdown-' + rowId);
+    var tr = document.getElementById('cm-meta-trigger-' + rowId);
+    if (dd) dd.classList.remove('is-open');
+    if (tr) tr.classList.remove('is-open');
+  }
+  function toggleCMMetaDropdown(rowId) {
+    var dd = document.getElementById('cm-meta-dropdown-' + rowId);
+    if (dd && dd.classList.contains('is-open')) closeCMMetaDropdown(rowId);
+    else openCMMetaDropdown(rowId);
+  }
+
+  function filterCMMetaItems(rowId, query) {
+    var container = document.getElementById('cm-meta-items-' + rowId);
+    if (!container) return;
+    var q = query.toLowerCase();
+    container.querySelectorAll('.cm-field-item').forEach(function(item) {
+      var nameEl = item.querySelectorAll('span')[1];
+      item.style.display = nameEl && nameEl.textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none';
+    });
+  }
+
+  function selectMetadataField(event, rowId, fieldName) {
+    event.stopPropagation();
+    var field = CUSTOM_META.filter(function(f) { return f.name === fieldName; })[0];
+    var trigger = document.getElementById('cm-meta-trigger-' + rowId);
+    var iconEl  = document.getElementById('cm-meta-icon-' + rowId);
+    if (trigger) {
+      var lbl = trigger.querySelector('.value-trigger-label');
+      if (lbl) lbl.textContent = fieldName;
+      trigger.classList.add('has-value');
+    }
+    if (iconEl && field) {
+      iconEl.innerHTML = '<span class="cm-field-dot" style="background:' + field.dotBg + ';border-color:' + field.color + ';display:inline-block;"></span>';
+    }
+    closeCMMetaDropdown(rowId);
+
+    var row = document.getElementById(rowId);
+    var prevField = row.dataset.cmField;
+    row.dataset.cmField = fieldName;
+
+    if (prevField && prevField !== fieldName) {
+      var srcTrigger = document.getElementById('src-trigger-' + rowId);
+      if (srcTrigger) {
+        var srcLbl = document.getElementById('src-label-' + rowId);
+        if (srcLbl) srcLbl.textContent = 'Choose source';
+        srcTrigger.classList.remove('has-value');
+      }
+      var oldExtra = document.getElementById('extra-wrapper-' + rowId);
+      if (oldExtra) oldExtra.remove();
+    }
+
+    if (!document.getElementById('op-wrapper-' + rowId)) {
+      var moreWrapper = row.querySelector('.more-menu-wrapper');
+      var firstOp = (OPERATORS['Custom Metadata'] || [''])[0];
+      var opWrapper = document.createElement('div');
+      opWrapper.className = 'operator-wrapper';
+      opWrapper.id = 'op-wrapper-' + rowId;
+      opWrapper.innerHTML =
+        '<div class="operator-trigger" id="op-trigger-' + rowId + '" onclick="toggleOpDropdown(\'' + rowId + '\')">' +
+          '<span class="operator-label">' + firstOp + '</span>' +
+          '<span class="operator-arrow">' + CARET_SVG + '</span>' +
+        '</div>' +
+        '<div class="operator-dropdown" id="op-dropdown-' + rowId + '">' +
+          buildOperatorItems(rowId, 'Custom Metadata') +
+        '</div>';
+      var srcWrapper = document.createElement('div');
+      srcWrapper.className = 'src-wrapper';
+      srcWrapper.id = 'src-wrapper-' + rowId;
+      srcWrapper.style.cssText = 'position:relative; flex:0 0 167px;';
+      srcWrapper.innerHTML = buildSourceField(rowId, 'Custom Metadata');
+      row.insertBefore(opWrapper, moreWrapper);
+      row.insertBefore(srcWrapper, moreWrapper);
+    }
+  }
+
+  function buildCMValueField(rowId) {
+    var row = document.getElementById(rowId);
+    var fieldName = row ? (row.dataset.cmField || '') : '';
+    var field = CUSTOM_META.filter(function(f) { return f.name === fieldName; })[0];
+    var valuesHtml = '';
+    if (field) {
+      valuesHtml = '<div style="padding:0 8px 8px;">';
+      field.values.forEach(function(v) {
+        var safeV  = v.replace(/'/g, "\\'");
+        var safeC  = field.color.replace(/'/g, "\\'");
+        var safeFn = fieldName.replace(/'/g, "\\'");
+        valuesHtml += '<div class="cm-value-row" onclick="selectCMValue(event,\'' + rowId + '\',\'' + safeFn + '\',\'' + safeV + '\',\'' + safeC + '\')">' +
+          '<span class="cm-value-pill" style="border-color:' + field.color + ';color:' + field.color + ';">' + v + '</span>' +
+          '</div>';
+      });
+      valuesHtml += '</div>';
+    }
+    return '<div class="value-trigger" id="picker-trigger-' + rowId + '" onclick="togglePickerDropdown(\'' + rowId + '\')">' +
+        '<span class="val-lead-icon" id="picker-lead-icon-' + rowId + '"></span>' +
+        '<span class="value-trigger-label" id="picker-label-' + rowId + '">Choose value</span>' +
+        '<span class="value-trigger-arrow">' + CARET_SVG + '</span>' +
+      '</div>' +
+      '<div class="picker-dropdown" id="picker-dropdown-' + rowId + '">' +
+        '<div class="picker-search-bar">' +
+          '<span class="fields-search-icon">' + SEARCH_SVG + '</span>' +
+          '<input class="picker-search-input" placeholder="Search for value" oninput="filterCMValues(\'' + rowId + '\',this.value)">' +
+        '</div>' +
+        valuesHtml +
+      '</div>';
+  }
+
   function buildSourceField(rowId, filterType) {
     var items;
     if (filterType === 'Location') {
@@ -1742,7 +1884,7 @@
     } else if (filterType === 'Tag') {
       items = [['Tag', 'Tag'], ['Ticket field value', 'Ticket field value']];
     } else if (filterType === 'Custom Metadata') {
-      items = [['Custom metadata value', 'Custom metadata value'], ['Ticket field value', 'Ticket field value']];
+      items = [['Metadata value', 'Metadata value'], ['Ticket field value', 'Ticket field value']];
     } else {
       items = [['Enter field value', 'Enter field value'], ['Ticket field value', 'Ticket field value']];
     }
@@ -1907,6 +2049,9 @@
     document.querySelectorAll('.more-menu.is-open').forEach(function(m) {
       closeMoreMenu(m.id.replace('more-menu-', ''));
     });
+    document.querySelectorAll('.picker-dropdown.is-open[id^="cm-meta-dropdown-"]').forEach(function(dd) {
+      closeCMMetaDropdown(dd.id.replace('cm-meta-dropdown-', ''));
+    });
   }
 
   function openDropdown(rowId) {
@@ -2053,12 +2198,13 @@
     closeDropdown(rowId);
 
     var row = document.getElementById(rowId);
-    ['op-wrapper-', 'val-wrapper-', 'src-wrapper-', 'extra-wrapper-'].forEach(function(prefix) {
+    ['op-wrapper-', 'val-wrapper-', 'src-wrapper-', 'extra-wrapper-', 'cm-meta-wrapper-', 'cm-line-break-'].forEach(function(prefix) {
       var el = document.getElementById(prefix + rowId);
       if (el) el.remove();
     });
 
     row.classList.add('is-expanded');
+    row.style.flexWrap = '';
 
     var firstOp = (OPERATORS[value] || [''])[0];
     var opWrapper = document.createElement('div');
@@ -2076,13 +2222,27 @@
     var moreWrapper = row.querySelector('.more-menu-wrapper');
 
     row.dataset.filterType = value;
-    var srcWrapper = document.createElement('div');
-    srcWrapper.className = 'src-wrapper';
-    srcWrapper.id = 'src-wrapper-' + rowId;
-    srcWrapper.style.cssText = 'position:relative; flex:0 0 167px;';
-    srcWrapper.innerHTML = buildSourceField(rowId, value);
-    row.insertBefore(opWrapper, moreWrapper);
-    row.insertBefore(srcWrapper, moreWrapper);
+
+    if (value === 'Custom Metadata') {
+      row.style.flexWrap = 'wrap';
+      var lineBreak = document.createElement('div');
+      lineBreak.id = 'cm-line-break-' + rowId;
+      lineBreak.style.cssText = 'flex: 0 0 100%; height: 0;';
+      row.appendChild(lineBreak);
+      var cmMetaWrapper = document.createElement('div');
+      cmMetaWrapper.id = 'cm-meta-wrapper-' + rowId;
+      cmMetaWrapper.style.cssText = 'position:relative; flex:0 0 167px;';
+      cmMetaWrapper.innerHTML = buildCMMetaPicker(rowId);
+      row.appendChild(cmMetaWrapper);
+    } else {
+      var srcWrapper = document.createElement('div');
+      srcWrapper.className = 'src-wrapper';
+      srcWrapper.id = 'src-wrapper-' + rowId;
+      srcWrapper.style.cssText = 'position:relative; flex:0 0 167px;';
+      srcWrapper.innerHTML = buildSourceField(rowId, value);
+      row.insertBefore(opWrapper, moreWrapper);
+      row.insertBefore(srcWrapper, moreWrapper);
+    }
   }
 
   function selectOperator(event, rowId, itemEl) {
@@ -2204,9 +2364,9 @@
     } else if (source === 'Tag') {
       extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
       extraWrapper.innerHTML = buildPickerField(rowId, 'Tag');
-    } else if (source === 'Custom metadata value') {
+    } else if (source === 'Metadata value') {
       extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
-      extraWrapper.innerHTML = buildCMPickerField(rowId);
+      extraWrapper.innerHTML = buildCMValueField(rowId);
     }
 
     row.insertBefore(extraWrapper, moreWrapper);
