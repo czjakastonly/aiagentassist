@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Assist Settings — Recommendation Filters</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'SF Pro Text', 'SF UI Text', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+    }
+
+    /* =====================================================
+       ZONE 1 — APP HEADER
+       bg-brand: #262144, height: 136px (52px top + 84px bottom)
+    ===================================================== */
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #262144;
+      flex-shrink: 0;
+    }
+
+    /* Top row: 52px */
+    .header-top {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .header-top-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .header-nav-link {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 24px;
+      color: rgba(255, 255, 255, 0.70);
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .header-nav-link.active {
+      color: #FFFFFF;
+    }
+
+    .header-top-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 24px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Bottom row: 84px */
+    .header-bottom {
+      height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .header-kb-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #FFFFFF;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 40px;
+      letter-spacing: -0.56px;
+      cursor: pointer;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.80);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+
+    /* "Deactivated" status chip: Neutral500 bg, white text */
+    .status-chip {
+      background: #706D84;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      padding: 1px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* =====================================================
+       MAIN 3-COLUMN LAYOUT
+    ===================================================== */
+
+    .main-layout {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 136px);
+      overflow: hidden;
+    }
+
+    /* =====================================================
+       ZONE 2 — COLUMN 1: ICON NAV
+       Width: 105px outer (8px padding each side = 89px inner)
+       border-right: border-subtle #E2E2E6
+    ===================================================== */
+
+    .col-icon-nav {
+      width: 105px;
+      flex-shrink: 0;
+      border-right: 1px solid #E2E2E6;
+      padding: 16px 8px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    /* Top nav items group */
+    .icon-nav-items {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .icon-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 4px;
+      cursor: default;
+      user-select: none;
+    }
+
+    /* Active state (Agent Assist only) */
+    .icon-nav-item.is-active {
+      background: #F7F7F9; /* bg-default-hover / Neutral100 */
+    }
+
+    .icon-nav-item .nav-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #706D84; /* icon-default */
+      flex-shrink: 0;
+    }
+
+    .icon-nav-item.is-active .nav-icon {
+      color: #1C1A24; /* icon-hover */
+    }
+
+    .icon-nav-item .nav-label {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 12px;
+      color: #706D84; /* text-subtle */
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .icon-nav-item.is-active .nav-label {
+      color: #1C1A24; /* text-dark */
+    }
+
+    /* Bottom KB section: tiles + add button */
+    .kb-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kb-tiles {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kb-tile {
+      width: 24px;
+      height: 24px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+
+    .kb-tile-lg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .kb-add-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #848296; /* icon-default-with-text */
+      cursor: pointer;
+    }
+
+    .kb-add-btn:hover {
+      background: #F7F7F9;
+    }
+
+    /* =====================================================
+       ZONE 3 — COLUMN 2: SETTINGS NAV
+       Width: 280px, padding-top: 36px
+    ===================================================== */
+
+    .col-settings-nav {
+      width: 280px;
+      flex-shrink: 0;
+      border-right: 1px solid #E2E2E6;
+      padding-top: 36px;
+      overflow: hidden;
+    }
+
+    /* Section heading: 11px/600, uppercase, letter-spacing 0.08em */
+    .settings-section-label {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8B8E95; /* text-light-grey */
+      padding-left: 16px;
+    }
+
+    .settings-nav-items {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 12px;
+      padding: 0 8px;
+    }
+
+    /* List Item — Basic component */
+    .settings-nav-item {
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 24px;
+      color: #5D6169; /* text-grey (legacy) */
+      cursor: pointer;
+    }
+
+    .settings-nav-item:hover {
+      background: #F7F7F9; /* bg-default-hover */
+      color: #26282E;
+    }
+
+    .settings-nav-item.is-active {
+      background: #F8F8F9; /* bg-hover / Pale White */
+      color: #26282E;
+    }
+
+    /* =====================================================
+       ZONE 4 — COLUMN 3: MAIN CONTENT
+       flex: 1, padding: 40px, content max-width: 800px
+    ===================================================== */
+
+    .col-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .content-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Header block */
+    .content-header {
+      padding-bottom: 24px;
+    }
+
+    /* Head 0: 32px / 400 / lh 48px / ls -0.64px */
+    .content-title {
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 48px;
+      letter-spacing: -0.64px;
+      color: #26282E;
+    }
+
+    /* UI: 14px / 400 / lh 20px */
+    .content-subtitle {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #706D84; /* text-subtle */
+    }
+
+    /* Filter card — grows with content, col-content scrolls */
+    .filter-card {
+      border-radius: 4px;
+      box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.24);
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-card-body {
+      padding: 24px 32px;
+    }
+
+    /* Add filter button: flex row, align center, gap 16px */
+    .add-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+    }
+
+    /* Circle: 36×36, white bg, border-default, border-radius full, padding 10px */
+    .add-filter-circle {
+      width: 36px;
+      height: 36px;
+      background: #FFFFFF;
+      border: 1px solid #C1C0CB; /* border-default */
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #474459; /* text-default / Neutral600 */
+      flex-shrink: 0;
+      transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+
+    /* UI Strong: 14px / 500 / lh 20px */
+    .add-filter-label {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #474459; /* text-default */
+      transition: color 120ms ease;
+    }
+
+    /* Hover: circle fills bg-green-default (#2C9F72), border disappears, icon → white */
+    .add-filter-btn:hover .add-filter-circle {
+      background: #2C9F72; /* bg-green-default / Green400 */
+      border-color: transparent;
+      color: #FFFFFF;
+    }
+
+    .add-filter-btn:hover .add-filter-label {
+      color: #1C1A24; /* text-hover */
+    }
+
+    /* =====================================================
+       SCREEN 2 — FILTER ROWS + DROPDOWN
+    ===================================================== */
+
+    #filter-rows-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Filter card header — sticky within col-content scroll */
+    .filter-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      padding: 14px 24px;
+      border-bottom: 1px solid #E2E2E6;
+      background: #FFFFFF;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .filter-card-header .add-filter-btn {
+      gap: 8px;
+    }
+
+    .filter-card-header .add-filter-circle {
+      width: 32px;
+      height: 32px;
+    }
+
+    .save-btn {
+      background: #e61168;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 100px;
+      padding: 0 20px;
+      height: 36px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 120ms ease;
+    }
+    .save-btn:hover { background: #c8005a; }
+
+    /* Hide header when no rows; hide empty-add when rows exist */
+    .filter-card:not(.has-rows) .filter-card-header {
+      display: none;
+    }
+    .filter-card.has-rows .filter-empty-add {
+      display: none;
+    }
+
+    /* Single condition row — select on left, more button pushed to right */
+    .filter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 4px;
+      padding: 8px;
+      margin: 0 -8px;
+      transition: background 120ms ease;
+    }
+
+    .filter-row:hover {
+      background: rgba(38,33,68,0.04);
+    }
+
+    /* Wrapper: position relative so dropdown can be absolute inside */
+    .filter-select-wrapper {
+      position: relative;
+    }
+
+    /* Select trigger — 180×40px, border-default, placeholder text */
+    .filter-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 40px;
+      width: 180px;
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      padding: 0 12px;
+      cursor: pointer;
+      user-select: none;
+      background: #FFFFFF;
+      transition: border-color 120ms ease;
+    }
+
+    .filter-select-trigger:hover {
+      border-color: #A3A0B4;
+    }
+
+    .filter-select-trigger.is-open {
+      border-color: #706D84;
+    }
+
+    .filter-select-label {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #848296; /* text-placeholder */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Icon slot in trigger — hidden until a value is selected */
+    .filter-select-icon {
+      width: 16px;
+      height: 16px;
+      display: none;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      color: #706D84;
+    }
+
+    .filter-select-trigger.has-value .filter-select-icon {
+      display: flex;
+    }
+
+    .filter-select-trigger.has-value {
+      gap: 8px;
+    }
+
+    .filter-select-trigger.has-value .filter-select-label {
+      color: #1C1A24; /* text-dark */
+    }
+
+    .filter-select-arrow {
+      color: #706D84;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      transition: transform 120ms ease;
+    }
+
+    .filter-select-trigger.is-open .filter-select-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Dropdown panel — 8px vertical padding for the Section wrapper */
+    .filter-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 180px;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 16px rgba(0,0,0,0.08), 0px 8px 16px rgba(0,0,0,0.08);
+      z-index: 200;
+      padding: 8px 0 0;
+    }
+
+    .filter-dropdown.is-open {
+      display: block;
+    }
+
+    /* Section wrapper inside dropdown */
+    .dropdown-section {
+      padding: 0 8px 8px;
+    }
+
+    /* Dropdown items — pl-12 pr-16 py-8, weight 500 */
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover,
+    .dropdown-item.is-hover {
+      background: rgba(38, 33, 68, 0.04);
+    }
+
+    .item-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #706D84;
+    }
+
+    .dropdown-item:hover .item-icon,
+    .dropdown-item.is-hover .item-icon {
+      color: #1C1A24;
+    }
+
+    .item-label {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #474459;
+      white-space: nowrap;
+    }
+
+    .dropdown-item:hover .item-label,
+    .dropdown-item.is-hover .item-label {
+      color: #1C1A24;
+    }
+
+    /* Bottom divider of the dropdown panel */
+    .dropdown-bottom-divider {
+      height: 1px;
+      background: #E2E2E6;
+    }
+
+    /* More (⋯) button — pre-selection state */
+    .filter-more-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #848296;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 6px;
+    }
+
+    .filter-more-btn:hover {
+      background: rgba(38,33,68,0.04);
+      color: #1C1A24;
+    }
+    .more-menu-wrapper.is-open .filter-more-btn,
+    .more-menu-wrapper.is-open .filter-delete-btn {
+      background: rgba(38,33,68,0.08);
+      color: #1C1A24;
+    }
+
+    /* =====================================================
+       SCREEN 3 — EXPANDED ROW (OPERATOR + VALUE)
+    ===================================================== */
+
+    .filter-row.is-expanded {
+      gap: 8px;
+      justify-content: flex-start;
+    }
+    .filter-row.is-expanded .more-menu-wrapper {
+      margin-left: auto;
+    }
+
+    /* Operator wrapper — 150px */
+    .operator-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .operator-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      height: 40px;
+      width: 150px;
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      padding: 0 12px;
+      cursor: pointer;
+      user-select: none;
+      background: #FFFFFF;
+      transition: border-color 120ms ease;
+    }
+
+    .operator-trigger:hover { border-color: #A3A0B4; }
+    .operator-trigger.is-open { border-color: #706D84; }
+
+    .operator-label {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1C1A24;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .operator-arrow {
+      color: #706D84;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      transition: transform 120ms ease;
+    }
+
+    .operator-trigger.is-open .operator-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Operator dropdown panel */
+    .operator-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 150px;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 16px rgba(0,0,0,0.08), 0px 8px 16px rgba(0,0,0,0.08);
+      z-index: 200;
+      padding: 8px 0 0;
+    }
+
+    .operator-dropdown.is-open { display: block; }
+
+    /* Operator items — no leading icon, tick on right for selected */
+    .op-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .op-item:hover,
+    .op-item.is-hover {
+      background: rgba(38, 33, 68, 0.04);
+    }
+
+    .op-item-label {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #474459;
+      white-space: nowrap;
+    }
+
+    .op-item:hover .op-item-label,
+    .op-item.is-hover .op-item-label {
+      color: #1C1A24;
+    }
+
+    .op-item-tick {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      visibility: hidden;
+    }
+
+    .op-item.is-selected .op-item-tick { visibility: visible; }
+    .op-item.is-selected .op-item-label { color: #1C1A24; }
+
+    /* Value field wrapper — flex:1 */
+    .value-wrapper {
+      flex: 1;
+      position: relative;
+      min-width: 0;
+    }
+
+    /* Value placeholder trigger (Location / Tag) */
+    .value-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      height: 40px;
+      width: 100%;
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      padding: 0 12px;
+      cursor: pointer;
+      user-select: none;
+      background: #FFFFFF;
+      transition: border-color 120ms ease;
+      box-sizing: border-box;
+    }
+
+    .value-trigger:hover { border-color: #A3A0B4; }
+
+    .value-trigger-label {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #848296;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .value-trigger-arrow {
+      color: #706D84;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Text input (Title) */
+    .value-input {
+      height: 40px;
+      width: 100%;
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      padding: 0 12px;
+      font-family: 'SF Pro Text', 'SF UI Text', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1C1A24;
+      background: #FFFFFF;
+      outline: none;
+      transition: border-color 120ms ease;
+      box-sizing: border-box;
+    }
+
+    .value-input::placeholder { color: #848296; }
+    .value-input:hover { border-color: #A3A0B4; }
+    .value-input:focus { border-color: #474459; }
+
+    /* Custom metadata: two sub-fields */
+    .meta-fields {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .meta-key-wrapper {
+      width: 181px;
+      flex-shrink: 0;
+    }
+
+    .meta-value-wrapper {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* =====================================================
+       SCREEN 3 EXTENDED — PICKER / SOURCE / VF DROPDOWNS
+    ===================================================== */
+
+    /* Value trigger — open/selected states */
+    .value-trigger.is-open { border-color: #706D84; }
+    .value-trigger-arrow { transition: transform 120ms ease; }
+    .value-trigger.is-open .value-trigger-arrow { transform: rotate(180deg); }
+    .value-trigger.has-value { gap: 8px; }
+    .value-trigger.has-value .value-trigger-label { color: #1C1A24; }
+
+    /* Leading icon slot in value trigger */
+    .val-lead-icon {
+      width: 16px; height: 16px;
+      display: none; flex-shrink: 0;
+      align-items: center; justify-content: center;
+      color: #706D84;
+    }
+    .value-trigger.has-value .val-lead-icon { display: flex; }
+
+    /* Source wrapper — Title col 3 */
+    .src-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .src-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 200px;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 16px rgba(0,0,0,0.08), 0px 8px 16px rgba(0,0,0,0.08);
+      z-index: 200;
+      padding: 8px 0 0;
+    }
+    .src-dropdown.is-open { display: block; }
+
+    /* VF (value-from) dropdown — Title → Choose ticket field */
+    .vf-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 260px;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 16px rgba(0,0,0,0.08), 0px 8px 16px rgba(0,0,0,0.08);
+      z-index: 200;
+    }
+    .vf-dropdown.is-open { display: block; }
+
+    .vf-section-header { padding: 12px 12px 8px 24px; }
+    .vf-section-label {
+      font-size: 12px; font-weight: 500; line-height: 16px;
+      color: #706D84; text-transform: uppercase;
+    }
+
+    .platform-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 16px 8px 12px;
+      border-radius: 4px; cursor: pointer; margin: 0 8px;
+    }
+    .platform-item:hover { background: rgba(38,33,68,0.04); }
+    .platform-logo {
+      width: 16px; height: 16px; border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .platform-item-name {
+      flex: 1; font-size: 14px; font-weight: 500;
+      line-height: 20px; color: #474459; white-space: nowrap;
+    }
+    .platform-item:hover .platform-item-name { color: #1C1A24; }
+    .platform-chevron {
+      color: #706D84; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .platform-item:hover .platform-chevron { color: #1C1A24; }
+
+    .vf-fields { display: none; }
+
+    .fields-nav-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #E2E2E6;
+    }
+    .fields-back-btn {
+      width: 28px; height: 28px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #706D84; flex-shrink: 0;
+    }
+    .fields-back-btn:hover { background: rgba(38,33,68,0.04); color: #1C1A24; }
+    .fields-nav-title {
+      font-size: 16px; font-weight: 400;
+      line-height: 24px; color: #1C1A24;
+    }
+    .fields-search-area {
+      display: flex; align-items: center; gap: 8px;
+      padding: 16px 16px 8px 20px;
+    }
+    .fields-search-icon {
+      width: 16px; height: 16px; color: #706D84;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .fields-search-input {
+      flex: 1; border: none; outline: none;
+      font-family: 'SF Pro Text', 'SF UI Text', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 14px; line-height: 20px;
+      color: #1C1A24; background: transparent;
+    }
+    .fields-search-input::placeholder { color: #848296; }
+    .fields-section-label {
+      font-size: 12px; font-weight: 500; line-height: 16px;
+      color: #706D84; text-transform: uppercase;
+      padding: 12px 12px 8px 20px;
+    }
+    .field-item {
+      padding: 8px 16px 8px 20px;
+      font-size: 14px; font-weight: 500;
+      line-height: 20px; color: #474459;
+      cursor: pointer; border-radius: 4px; margin: 0 8px;
+    }
+    .field-item:hover { background: rgba(38,33,68,0.04); color: #1C1A24; }
+
+    /* Picker dropdown — Location / Tag / Custom Metadata */
+    .picker-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      min-width: 200px;
+      max-height: 280px;
+      overflow-y: auto;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 16px rgba(0,0,0,0.08), 0px 8px 16px rgba(0,0,0,0.08);
+      z-index: 200;
+    }
+    .picker-dropdown.is-open { display: block; }
+
+    .picker-search-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 16px 16px 8px 20px;
+      position: sticky; top: 0; background: #FFFFFF;
+    }
+    .picker-search-icon {
+      width: 16px; height: 16px; flex-shrink: 0;
+      color: #706D84; display: flex; align-items: center; justify-content: center;
+    }
+    .picker-search-input {
+      flex: 1; border: none; outline: none;
+      font-family: 'SF Pro Text', 'SF UI Text', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 14px; line-height: 20px;
+      color: #1C1A24; background: transparent;
+    }
+    .picker-search-input::placeholder { color: #848296; }
+    .picker-items { padding: 0 8px 8px; }
+
+    .folder-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 4px; cursor: pointer;
+    }
+    .folder-item:hover { background: rgba(38,33,68,0.04); }
+    .folder-item-icon {
+      width: 16px; height: 16px; color: #706D84;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .folder-item:hover .folder-item-icon { color: #1C1A24; }
+    .folder-item-name {
+      font-size: 14px; font-weight: 500;
+      line-height: 20px; color: #474459;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .folder-item:hover .folder-item-name { color: #1C1A24; }
+
+    .tag-item { padding: 8px; }
+    .tag-chip {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 8px; border-radius: 6px; cursor: pointer;
+    }
+    .tag-chip:hover { background: rgba(38,33,68,0.04); }
+    .tag-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%; flex-shrink: 0; border: 1px solid;
+    }
+    .tag-name {
+      font-size: 14px; font-weight: 500; line-height: 20px;
+      color: #474459; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; max-width: 144px;
+    }
+    .tag-chip:hover .tag-name { color: #1C1A24; }
+
+    .tag-badge-row {
+      display: flex; flex-direction: column; align-items: flex-start;
+      padding: 8px; border-radius: 4px; cursor: pointer;
+    }
+    .tag-badge-row:hover { background: rgba(38,33,68,0.04); }
+    .tag-badge {
+      display: flex; align-items: center;
+      gap: 8px; padding: 4px 8px; border-radius: 6px; flex-shrink: 0;
+    }
+    .tag-color-sq {
+      width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0;
+    }
+
+    /* Custom Metadata 2-level picker */
+    .cm-field-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 4px; cursor: pointer;
+      font-size: 14px; font-weight: 500; line-height: 20px; color: #474459;
+    }
+    .cm-field-item:hover { background: rgba(38,33,68,0.04); color: #1C1A24; }
+    .cm-field-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      border: 1.5px solid; flex-shrink: 0;
+    }
+    .cm-field-chevron {
+      margin-left: auto; color: #848296;
+      width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
+    }
+    .cm-field-item:hover .cm-field-chevron { color: #1C1A24; }
+    .cm-value-row {
+      padding: 4px 8px; border-radius: 4px; cursor: pointer;
+    }
+    .cm-value-row:hover { background: rgba(38,33,68,0.04); }
+    .cm-value-pill {
+      display: inline-flex; align-items: center;
+      background: rgba(230,17,104,0.08);
+      border: 1px solid #e61168; border-radius: 6px;
+      padding: 3px 8px; color: #e61168;
+      font-size: 13px; font-weight: 500; line-height: 18px;
+    }
+    .cm-selected-badge {
+      display: inline-flex; align-items: center;
+      background: rgba(230,17,104,0.08);
+      border: 1px solid #e61168; border-radius: 6px;
+      padding: 2px 8px; color: #e61168;
+      font-size: 13px; font-weight: 500; flex-shrink: 0;
+    }
+
+    /* Delete button — post-selection state */
+    .filter-delete-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #848296;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 6px;
+    }
+
+    .filter-delete-btn:hover {
+      background: #F7F7F9;
+      color: #1C1A24;
+    }
+
+    /* Source dropdown items */
+    .src-item {
+      width: 100%; padding: 8px 16px 8px 12px;
+      border-radius: 4px; cursor: pointer;
+      font-size: 14px; font-weight: 500; line-height: 20px;
+      color: #474459; box-sizing: border-box;
+    }
+    .src-item:hover { background: rgba(38,33,68,0.04); color: #1C1A24; }
+
+    /* AND/OR connector between filter rows */
+    .filter-connector {
+      position: relative;
+      display: flex; align-items: center;
+    }
+    .connector-trigger {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 12px; border-radius: 28px;
+      border: 1px solid #C1C0CB; background: #FFFFFF;
+      font-family: 'SF Pro Text', 'SF UI Text', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 12px; font-weight: 500; line-height: 16px;
+      color: #474459; cursor: pointer; user-select: none;
+    }
+    .connector-trigger:hover { background: rgba(38,33,68,0.04); }
+    .connector-arrow {
+      display: flex; align-items: center; justify-content: center;
+      color: #848296;
+      transition: transform 0.15s ease;
+    }
+    .connector-trigger.is-open .connector-arrow { transform: rotate(180deg); }
+    .connector-dropdown {
+      display: none; position: absolute;
+      top: calc(100% + 4px); left: 0; z-index: 200;
+      background: #FFFFFF; border-radius: 8px;
+      box-shadow: 0px 0px 16px rgba(0,0,0,0.08), 0px 8px 16px rgba(0,0,0,0.08);
+      min-width: 120px;
+    }
+    .connector-dropdown .dropdown-section { padding-top: 8px; }
+    .connector-dropdown.is-open { display: block; }
+
+    /* More menu */
+    .more-menu-wrapper {
+      position: relative; flex-shrink: 0;
+    }
+    .more-menu {
+      display: none; position: absolute;
+      top: calc(100% + 4px); right: 0; z-index: 200;
+      background: #FFFFFF; border-radius: 4px;
+      box-shadow: 0px 0px 16px rgba(0,0,0,0.08), 0px 8px 16px rgba(0,0,0,0.08);
+      min-width: 240px; padding: 8px 0 0;
+      border-bottom: 1px solid #E2E2E6;
+    }
+    .more-menu.is-open { display: block; }
+    .more-menu-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px 8px 12px; margin: 0 8px;
+      border-radius: 4px; cursor: pointer;
+      font-size: 14px; font-weight: 500; line-height: 20px;
+      color: #474459; white-space: nowrap;
+    }
+    .more-menu-item:hover { background: rgba(38,33,68,0.04); color: #1C1A24; }
+    .more-menu-item:last-child { margin-bottom: 8px; }
+    .more-menu-item-icon {
+      width: 16px; height: 16px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #706D84;
+    }
+    .more-menu-item:hover .more-menu-item-icon { color: #1C1A24; }
+
+    /* Nested condition group */
+    .filter-nested-group {
+      border-left: 2px solid #e61168;
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     ZONE 1 — APP HEADER
+     Two rows: 52px top + 84px bottom = 136px total
+     NOTE: eye/preview icon (layout-16 or preview-16) was not found
+     in the icons folder — that header button renders without an inner icon.
+================================================================ -->
+<header class="app-header">
+
+  <!-- Top row: Stonly logo + nav links | John Doe account -->
+  <div class="header-top">
+    <div class="header-top-left">
+
+      <!-- Stonly logotype (white wordmark + pink S mark) — Stonly-logotype-primary.svg -->
+      <a class="header-logo" href="#">
+        <svg width="80" height="22" viewBox="0 0 200 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#logo-clip)">
+            <path d="M165.974 0.926025H159.445V41.2385H165.974V0.926025Z" fill="white"/>
+            <path d="M88.4777 35.7418C89.0527 35.6097 89.5942 35.4621 90.0954 35.2942L90.0932 35.292C90.5967 35.1242 91.0061 34.9676 91.3216 34.8176C91.6371 34.6677 91.8139 34.576 91.8519 34.5379V40.3982C91.8161 40.4362 91.6304 40.5369 91.2948 40.7047C90.9591 40.8726 90.5228 41.0314 89.9836 41.1791C89.4443 41.3268 88.7842 41.4678 88.0033 41.5975C87.2224 41.7273 86.3475 41.7922 85.3808 41.7922C83.9667 41.7922 82.6554 41.5327 81.4471 41.0113C80.2388 40.4899 79.2051 39.756 78.3503 38.8073C77.4933 37.8585 76.8243 36.7151 76.3409 35.3748C75.8576 34.0367 75.616 32.5487 75.616 30.9108V19.3603H72.2685V14.2273C73.2732 14.0035 74.0899 13.688 74.7232 13.2786C75.3542 12.8713 75.8576 12.3298 76.2291 11.6608C76.6005 10.9917 76.8981 10.1728 77.1219 9.20614C77.3434 8.2395 77.5291 6.89471 77.679 5.51859H82.143V13.5023H91.0151V19.3626H82.143L82.199 30.5237C82.199 32.1236 82.6353 33.4259 83.5102 34.4305C84.3851 35.4352 85.4726 35.9364 86.7748 35.9364C87.3342 35.9364 87.9004 35.8715 88.4777 35.7418Z" fill="white"/>
+            <path d="M57.8721 23.4402L61.1077 24.333H61.1099C64.0099 25.0401 66.102 26.0336 67.3864 27.3179C68.6708 28.6023 69.313 30.3029 69.313 32.4241C69.313 33.7622 69.0422 34.9996 68.5029 36.1341C67.9614 37.2685 67.1917 38.2374 66.187 39.0362C65.1824 39.8373 64.0009 40.4683 62.6427 40.9337C61.2822 41.3991 59.7674 41.6318 58.0937 41.6318C55.639 41.6318 53.4708 41.1955 51.5935 40.3206C49.7161 39.4479 48.1811 38.1546 46.9907 36.4428L51.6225 32.4801C52.3677 33.5586 53.3723 34.3954 54.6366 34.9906C55.9008 35.5858 57.2948 35.8834 58.8209 35.8834C59.8994 35.8834 60.8481 35.5948 61.6671 35.0175C62.4861 34.4424 62.8955 33.798 62.8955 32.9813C62.8955 32.1646 62.589 31.5224 61.9759 31.0569C61.3628 30.5915 60.2731 30.1731 58.7112 29.8017L55.7531 29.1326C53.482 28.6135 51.7255 27.6178 50.4791 26.1477C49.2306 24.6776 48.6443 22.9569 48.7204 20.9855C48.7584 19.7974 49.0292 18.6987 49.5304 17.694C50.0316 16.6894 50.7297 15.8346 51.6225 15.1275C52.5153 14.4204 53.5849 13.8722 54.8313 13.4807C56.0776 13.0891 57.4448 12.8944 58.9328 12.8944C61.0898 12.8944 62.9515 13.2681 64.5133 14.011C66.0752 14.7538 67.3774 15.8883 68.4202 17.4143L64.124 20.9296C63.4907 20.1129 62.6539 19.4707 61.6134 19.0053C60.5707 18.5399 59.5101 18.3071 58.4315 18.3071C58.0579 18.3071 57.6685 18.3541 57.259 18.4459C56.8496 18.5399 56.4781 18.6965 56.1425 18.9202C55.8068 19.144 55.5361 19.3946 55.3325 19.6743C55.1288 19.9518 55.0259 20.2785 55.0259 20.6499C55.0259 21.3189 55.2676 21.8962 55.7509 22.3796C56.2342 22.8629 56.9413 23.2164 57.8721 23.4402Z" fill="white"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M118.777 16.9074C117.566 15.6431 116.116 14.6676 114.425 13.9784C112.731 13.2914 110.845 12.9468 108.761 12.9468C106.678 12.9468 104.79 13.2914 103.098 13.9784C101.404 14.6676 99.9543 15.6431 98.746 16.9074C97.5377 18.1716 96.5979 19.6887 95.9288 21.4564C95.2598 23.2241 94.9242 25.1865 94.9242 27.3435C94.9242 29.5006 95.2598 31.4719 95.9288 33.2597C96.5979 35.0453 97.5377 36.5714 98.746 37.8356C99.9543 39.0998 101.406 40.0777 103.098 40.7646C104.79 41.4516 106.678 41.7961 108.761 41.7961C110.845 41.7961 112.733 41.4516 114.425 40.7646C116.116 40.0777 117.569 39.0998 118.777 37.8356C119.985 36.5714 120.925 35.0453 121.594 33.2597C122.263 31.4741 122.599 29.5028 122.599 27.3435C122.599 25.1842 122.263 23.2241 121.594 21.4564C120.925 19.691 119.985 18.1739 118.777 16.9074ZM114.062 33.564C112.722 35.146 110.957 35.9359 108.761 35.9359C106.566 35.9359 104.799 35.146 103.461 33.564C102.12 31.9843 101.451 29.9078 101.451 27.3413C101.451 24.7748 102.12 22.7095 103.461 21.1476C104.801 19.5858 106.566 18.8049 108.761 18.8049C110.957 18.8049 112.724 19.5858 114.062 21.1476C115.403 22.7095 116.072 24.7748 116.072 27.3413C116.072 29.9078 115.403 31.9821 114.062 33.564Z" fill="white"/>
+            <path d="M147.352 13.8956C148.636 14.5288 149.724 15.4127 150.617 16.5471C151.509 17.6816 152.198 19.0577 152.682 20.6755C153.165 22.2955 153.407 24.0901 153.407 26.0614V41.239H146.877V26.0614C146.877 23.8663 146.309 22.1076 145.175 20.7874C144.04 19.4672 142.563 18.8071 140.628 18.8071C138.692 18.8071 137.139 19.4672 135.967 20.7874C134.794 22.1098 134.208 23.8663 134.208 26.0614V41.239H127.679V13.504H133.427L133.814 19.588C134.882 17.3795 136.11 15.7483 137.502 14.7056C139.064 13.5331 140.943 12.9468 143.138 12.9468C144.665 12.9468 146.067 13.2623 147.352 13.8956Z" fill="white"/>
+            <path d="M182.729 54.6297L199.146 13.505H192.225L186.98 27.2886C186.721 27.9957 186.479 28.7878 186.255 29.6604C186.032 30.5353 185.828 31.3632 185.642 32.1441C185.418 33.075 185.213 33.9857 185.027 34.8785H184.915C184.729 33.9857 184.526 33.075 184.302 32.1441C184.116 31.3632 183.91 30.5353 183.689 29.6604C183.465 28.7878 183.223 27.9957 182.964 27.2886L177.773 13.505H170.63L181.344 40.459L175.698 54.6297H182.729Z" fill="white"/>
+            <!-- Pink S lettermark -->
+            <path d="M15.3178 5.39478H20.4822C22.6281 5.39478 24.3823 7.18261 24.3823 9.3665C24.3823 11.5504 22.6281 13.336 20.4822 13.336H15.3178C13.172 13.336 11.4177 11.5504 11.4177 9.3665C11.4177 7.18261 13.172 5.39478 15.3178 5.39478Z" fill="#E61168"/>
+            <path d="M8.78263 19.2886C6.63902 19.2886 4.88474 21.0764 4.88474 23.2603C4.88474 25.4442 6.63902 27.2298 8.78263 27.2298H16.4151C18.5609 27.2298 20.3129 25.4442 20.3129 23.2603C20.3129 21.0764 18.5587 19.2886 16.4151 19.2886H8.78263Z" fill="#E61168"/>
+            <path d="M27.0146 19.2886C24.8687 19.2886 23.1167 21.0765 23.1167 23.2604C23.1167 25.4443 24.871 27.2321 27.0146 27.2321C29.1582 27.2321 30.9125 25.4443 30.9125 23.2604C30.9125 21.0765 29.1582 19.2886 27.0146 19.2886Z" fill="#E61168"/>
+            <path d="M14.5019 33.1824H31.9014C34.0473 33.1824 35.8015 34.9725 35.8015 37.1542C35.8015 39.3358 34.0473 41.1237 31.9014 41.1237H14.5019C12.356 41.1237 10.6017 39.3403 10.6017 37.1542C10.6017 34.968 12.356 33.1824 14.5019 33.1824Z" fill="#E61168"/>
+            <path d="M3.90012 33.1824C1.75427 33.1824 -3.8147e-06 34.968 -3.8147e-06 37.1541C-3.8147e-06 39.3402 1.75427 41.1236 3.90012 41.1236C6.04597 41.1236 7.80025 39.3358 7.80025 37.1541C7.80025 34.9725 6.04597 33.1824 3.90012 33.1824Z" fill="#E61168"/>
+          </g>
+          <defs>
+            <clipPath id="logo-clip">
+              <rect width="200" height="55" fill="white"/>
+            </clipPath>
+          </defs>
+        </svg>
+      </a>
+
+      <!-- Top nav links (14px / 500) -->
+      <nav class="header-nav">
+        <a class="header-nav-link" href="#">Guides</a>
+        <a class="header-nav-link active" href="#">Knowledge base</a>
+        <a class="header-nav-link" href="#">Widget</a>
+        <a class="header-nav-link" href="#">Insights</a>
+      </nav>
+    </div>
+
+    <!-- Account label: "John Doe" + dropdown caret -->
+    <div class="header-top-right">
+      <span>John Doe</span>
+      <!-- Triangle-arrow-down-12.svg (white) -->
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="white"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Bottom row: KB name | language + preview + status -->
+  <div class="header-bottom">
+    <div class="header-kb-name">
+      <span>Design team</span>
+      <!-- Triangle-arrow-down-12.svg (white, rendered at 16px) -->
+      <svg width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="white"/>
+      </svg>
+    </div>
+
+    <div class="header-actions">
+      <!-- Language toggle: 36px circle, white border, "EN" text -->
+      <div class="header-action-btn">EN</div>
+
+      <!-- Preview/eye button: 36px circle, white border
+           NOTE: layout/preview/eye icon NOT found in icons folder.
+           Button container rendered; inner icon omitted. -->
+      <div class="header-action-btn" title="Preview (icon missing from assets)"></div>
+
+      <!-- Status chip: Neutral500 bg, white text -->
+      <div class="status-chip">Deactivated</div>
+    </div>
+  </div>
+
+</header>
+
+<!-- ================================================================
+     MAIN 3-COLUMN LAYOUT
+================================================================ -->
+<div class="main-layout">
+
+  <!-- ============================================================
+       ZONE 2 — COLUMN 1: ICON NAV
+       105px outer width (89px inner), flex column space-between
+       Static only — no hover/click states per spec
+  ============================================================ -->
+  <aside class="col-icon-nav">
+
+    <!-- Top group: 7 navigation items -->
+    <div class="icon-nav-items">
+
+      <!-- 1. Content — knowledge-base-24 -->
+      <div class="icon-nav-item">
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M21.5 2.75C21.8797 2.75 22.1935 3.03215 22.2432 3.39823L22.25 3.5V18.5C22.25 18.9142 21.9142 19.25 21.5 19.25C19.0365 19.25 17.1266 19.5543 15.4828 20.0953L15.1575 20.2067L14.0956 20.6418L13.4972 20.877L13.2987 20.9513L12.9225 21.0843C12.6257 21.1836 12.3795 21.25 12.25 21.25C12.1612 21.25 12.0175 21.2188 11.8403 21.1671L11.5519 21.0757L11.3939 21.021L11.0028 20.877L10.6012 20.7206L9.34249 20.2067C7.62555 19.5962 5.62773 19.25 3 19.25C2.6203 19.25 2.30651 18.9678 2.25685 18.6018L2.25 18.5V3.5C2.25 3.08579 2.58579 2.75 3 2.75C5.62772 2.75 7.74713 3.08286 9.57183 3.6707L10.0812 3.84385L10.3579 3.94512L10.7533 4.10097L11.1742 4.2803L11.9099 4.60876L12.25 4.75L12.3583 4.70751L13.3258 4.2803L13.7467 4.10097L13.9441 4.02143L14.3475 3.86941L14.5671 3.79165C16.4725 3.12872 18.6971 2.75 21.5 2.75ZM3.75 4.261V17.76L4.02082 17.7674C6.00591 17.8369 7.65976 18.1118 9.12654 18.5568L9.48942 18.6716L9.84501 18.7933L10.2134 18.9349L11.5 19.465V6.033L11.3996 5.99586L10.9968 5.8384L9.82751 5.35886L9.54513 5.24689L9.44002 5.20835C8.02013 4.71436 6.39531 4.39044 4.42285 4.28634L3.96143 4.26624L3.75 4.261ZM20.75 4.261L20.5386 4.26624C18.5118 4.33623 16.8436 4.62987 15.3913 5.0974L14.9929 5.23259L14.8245 5.29768L13.9183 5.66969L13.2985 5.91948L13 6.032V19.464L14.4258 18.8797L14.655 18.7933C16.1808 18.2508 17.8979 17.9011 19.9897 17.7891L20.4792 17.7674L20.75 17.76V4.261Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-label">Content</span>
+      </div>
+
+      <!-- 2. Layout — layers-24 -->
+      <div class="icon-nav-item">
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.3811 15.0556C19.5714 14.6877 20.0239 14.543 20.3918 14.7334L21.4426 15.2773C21.8617 15.4944 22.1252 15.9274 22.1252 16.3994C22.1252 16.8242 21.9112 17.2175 21.5627 17.4502L21.4417 17.5214L12.9338 21.9228C12.4012 22.1977 11.7773 22.2222 11.2278 21.997L11.0657 21.9218L2.55786 17.5214C2.13871 17.3044 1.87528 16.8714 1.87524 16.3994C1.87524 15.9273 2.1384 15.4946 2.55786 15.2773L3.60669 14.7353C3.97455 14.5452 4.42716 14.6888 4.61743 15.0566C4.80757 15.4245 4.66299 15.8771 4.29517 16.0673L3.65259 16.3994L11.7542 20.5898C11.8774 20.6534 12.0192 20.6658 12.1497 20.6279L12.2454 20.5898L20.3459 16.3994L19.7024 16.0664C19.3345 15.8761 19.1908 15.4235 19.3811 15.0556ZM19.3811 10.6562C19.5714 10.2883 20.0239 10.1446 20.3918 10.3349L21.4426 10.8779C21.8618 11.095 22.1252 11.5279 22.1252 12C22.1252 12.4248 21.9112 12.818 21.5627 13.0507L21.4417 13.122L12.9338 17.5234C12.4012 17.7983 11.7773 17.8228 11.2278 17.5976L11.0657 17.5224L2.55786 13.122C2.13868 12.9049 1.87525 12.472 1.87524 12C1.87524 11.5279 2.13838 11.0951 2.55786 10.8779L3.60669 10.3359C3.97454 10.1458 4.42716 10.2894 4.61743 10.6572C4.80763 11.0251 4.66302 11.4776 4.29517 11.6679L3.65356 11.999L11.7542 16.1904C11.8774 16.254 12.0192 16.2664 12.1497 16.2285L12.2454 16.1904L20.3459 11.999L19.7024 11.6669C19.3345 11.4766 19.1908 11.0241 19.3811 10.6562ZM11.0657 2.10152C11.5984 1.82643 12.2222 1.80215 12.7717 2.0273L12.9348 2.1025L21.4573 6.50875C21.8667 6.7328 22.1252 7.16037 22.1252 7.62789C22.1251 8.05255 21.9113 8.44493 21.5627 8.67769L21.4417 8.74996L12.9338 13.1455C12.4012 13.4205 11.7773 13.4459 11.2278 13.2207L11.0657 13.1455L2.55786 8.7441C2.13868 8.52701 1.87524 8.09409 1.87524 7.62203C1.87539 7.19734 2.08866 6.80474 2.43677 6.57222L2.55786 6.50093L11.0657 2.10152ZM11.8499 3.39644L11.7542 3.43453L3.65259 7.62203L11.7542 11.8125C11.8467 11.8602 11.9502 11.8796 12.051 11.8701L12.1506 11.8505L12.2454 11.8125L20.3508 7.62398L12.2463 3.43453C12.123 3.37081 11.9805 3.35829 11.8499 3.39644Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-label">Layout</span>
+      </div>
+
+      <!-- 3. Search — search-16 (24×24 viewBox) -->
+      <div class="icon-nav-item">
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.96967 15.9697C7.26256 15.6768 7.73732 15.6768 8.03022 15.9697C8.32311 16.2626 8.32311 16.7374 8.03022 17.0303L2.03022 23.0303C1.73732 23.3232 1.26256 23.3232 0.96967 23.0303C0.676777 22.7374 0.676777 22.2626 0.96967 21.9697L6.96967 15.9697ZM14.9999 1.5C19.1421 1.5 22.4999 4.85786 22.4999 9C22.4999 13.1421 19.1421 16.5 14.9999 16.5C10.8578 16.5 7.49994 13.1421 7.49994 9C7.49994 4.85786 10.8578 1.5 14.9999 1.5ZM14.9999 3C11.6862 3 8.99994 5.68629 8.99994 9C8.99994 12.3137 11.6862 15 14.9999 15C18.3137 15 20.9999 12.3137 20.9999 9C20.9999 5.68629 18.3137 3 14.9999 3Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-label">Search</span>
+      </div>
+
+      <!-- 4. AI Answers — ai-24 -->
+      <div class="icon-nav-item">
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M13.4189 7.48416C13.8364 6.64915 14.9801 6.59713 15.4882 7.32791L15.581 7.48416L17.5341 11.3914C17.5502 11.4234 17.5763 11.4495 17.6083 11.4656L21.5156 13.4187C22.4061 13.864 22.4062 15.1355 21.5156 15.5808L17.6083 17.534C17.5763 17.5501 17.5502 17.5761 17.5341 17.6082L15.581 21.5154C15.1357 22.406 13.8642 22.406 13.4189 21.5154L11.4657 17.6082C11.4496 17.5762 11.4236 17.5501 11.3915 17.534L7.4843 15.5808C6.59379 15.1355 6.59376 13.864 7.4843 13.4187L11.3915 11.4656C11.4236 11.4495 11.4496 11.4234 11.4657 11.3914L13.4189 7.48416ZM12.8075 12.0623C12.6463 12.3846 12.3848 12.6462 12.0624 12.8074L8.67668 14.4998L12.0624 16.1922C12.3848 16.3534 12.6463 16.615 12.8075 16.9373L14.4999 20.3221L16.1923 16.9373C16.3535 16.615 16.6151 16.3534 16.9374 16.1922L20.3222 14.4998L16.9374 12.8074C16.6151 12.6462 16.3535 12.3846 16.1923 12.0623L14.4999 8.67654L12.8075 12.0623ZM5.82219 2.18631C6.16689 1.75493 6.83292 1.75498 7.17766 2.18631L7.24602 2.28494L8.48918 4.35623C8.52718 4.41955 8.58016 4.47351 8.64348 4.51151L10.7148 5.75369C11.2776 6.09165 11.2776 6.90792 10.7148 7.24588L8.64348 8.48904C8.58015 8.52704 8.52718 8.58001 8.48918 8.64334L7.24602 10.7146C6.90805 11.2774 6.09179 11.2774 5.75383 10.7146L4.51164 8.64334C4.47364 8.58002 4.41969 8.52704 4.35637 8.48904L2.28508 7.24588C1.72237 6.9079 1.72234 6.09165 2.28508 5.75369L4.35637 4.51053C4.41971 4.47253 4.47364 4.41957 4.51164 4.35623L5.75383 2.28494L5.82219 2.18631ZM5.79778 5.12869C5.63311 5.40313 5.40326 5.63297 5.12883 5.79764L3.95793 6.49979L5.12883 7.20194C5.40325 7.36659 5.63311 7.59647 5.79778 7.87088L6.49993 9.0408L7.20207 7.87088C7.36673 7.59646 7.5966 7.3666 7.87102 7.20194L9.04094 6.49979L7.87102 5.79764C7.59661 5.63297 7.36673 5.40311 7.20207 5.12869L6.49993 3.95779L5.79778 5.12869Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-label">AI Answers</span>
+      </div>
+
+      <!-- 5. Agent Assist — ai-agent-assist-24 (ACTIVE STATE)
+           Icon keeps its brand green #2C9F72 fill as designed -->
+      <div class="icon-nav-item is-active">
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip-aa)">
+              <path d="M12 0C14.3869 0 16.6764 0.947915 18.3643 2.63574C19.8911 4.16259 20.8098 6.18199 20.9717 8.32031C21.6975 8.46277 22.3707 8.81796 22.9014 9.34863C23.6046 10.0519 24 11.0054 24 12V15C24 15.9946 23.6046 16.9481 22.9014 17.6514C22.3777 18.1751 21.7149 18.5268 21 18.6729V18.75C21 19.7446 20.6046 20.6981 19.9014 21.4014C19.1981 22.1046 18.2446 22.5 17.25 22.5H15.6182C15.5073 22.813 15.3301 23.1015 15.0908 23.3408C14.6689 23.7628 14.0967 24 13.5 24H12C11.4033 24 10.8311 23.7628 10.4092 23.3408C9.98722 22.9189 9.75 22.3467 9.75 21.75C9.75 21.1533 9.98722 20.5811 10.4092 20.1592C10.8311 19.7372 11.4033 19.5 12 19.5H13.5C14.0967 19.5 14.6689 19.7372 15.0908 20.1592C15.3301 20.3985 15.5073 20.687 15.6182 21H17.25C17.8467 21 18.4189 20.7628 18.8408 20.3408C19.2628 19.9189 19.5 19.3467 19.5 18.75C19.1022 18.75 18.7208 18.5919 18.4395 18.3105C18.1581 18.0292 18 17.6478 18 17.25V9.75C18 9.35218 18.1581 8.97076 18.4395 8.68945C18.7118 8.41715 19.0779 8.26171 19.4619 8.25195C19.2902 6.53749 18.5328 4.92537 17.3037 3.69629C15.8972 2.28977 13.9891 1.5 12 1.5C10.0109 1.5 8.10281 2.28977 6.69629 3.69629C5.46719 4.92539 4.70882 6.53746 4.53711 8.25195C4.92147 8.26147 5.28801 8.41692 5.56055 8.68945C5.84185 8.97076 6 9.35217 6 9.75V17.25C6 17.6478 5.84185 18.0292 5.56055 18.3105C5.27924 18.5919 4.89782 18.75 4.5 18.75H3.75C2.75544 18.75 1.80189 18.3546 1.09863 17.6514C0.395371 16.9481 0 15.9946 0 15V12C0 11.0054 0.395371 10.0519 1.09863 9.34863C1.62908 8.81819 2.30191 8.46289 3.02734 8.32031C3.18919 6.18197 4.10888 4.16261 5.63574 2.63574C7.32357 0.947915 9.61305 0 12 0ZM12 21C11.8011 21 11.6104 21.0791 11.4697 21.2197C11.3291 21.3604 11.25 21.5511 11.25 21.75C11.25 21.9489 11.3291 22.1396 11.4697 22.2803C11.6104 22.4209 11.8011 22.5 12 22.5H13.5C13.6989 22.5 13.8896 22.4209 14.0303 22.2803C14.1709 22.1396 14.25 21.9489 14.25 21.75C14.25 21.5511 14.1709 21.3604 14.0303 21.2197C13.8896 21.0791 13.6989 21 13.5 21H12ZM3.75 9.75C3.15326 9.75 2.58114 9.98722 2.15918 10.4092C1.73722 10.8311 1.5 11.4033 1.5 12V15C1.5 15.5967 1.73722 16.1689 2.15918 16.5908C2.58114 17.0128 3.15326 17.25 3.75 17.25H4.5V9.75H3.75ZM19.5 17.25H20.25C20.8467 17.25 21.4189 17.0128 21.8408 16.5908C22.2628 16.1689 22.5 15.5967 22.5 15V12C22.5 11.4033 22.2628 10.8311 21.8408 10.4092C21.4189 9.98722 20.8467 9.75 20.25 9.75H19.5V17.25Z" fill="#2C9F72"/>
+            </g>
+            <defs>
+              <clipPath id="clip-aa">
+                <rect width="24" height="24" fill="white"/>
+              </clipPath>
+            </defs>
+          </svg>
+        </div>
+        <span class="nav-label">Agent Assist</span>
+      </div>
+
+      <!-- 6. Design — palette-24 -->
+      <div class="icon-nav-item">
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 14.104 21.2676 15.5237 19.7647 16.0997C18.7793 16.4774 18.0201 16.4401 16.168 16.153L16.0063 16.128C14.5929 15.9107 14.0419 15.943 13.8334 16.1516C13.7934 16.1916 13.7966 16.1629 13.8785 16.3782C13.9654 16.6064 14.1159 16.876 14.3895 17.3031C14.4056 17.3282 14.6356 17.684 14.703 17.7905C14.8324 17.995 14.9331 18.1635 15.0226 18.3297C15.3186 18.8798 15.4749 19.3628 15.429 19.9221C15.3003 21.4917 14.027 22 12 22ZM12 20.5C16.9222 20.5 10.6477 17.2159 12.7727 15.0909C14.8977 12.9659 20.5 17.5131 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5ZM9.70895 8.98559C8.88858 9.10088 8.13008 8.52931 8.01478 7.70895C7.89949 6.88858 8.47106 6.13008 9.29143 6.01478C10.1118 5.89949 10.8703 6.47106 10.9856 7.29143C11.1009 8.11179 10.5293 8.87029 9.70895 8.98559ZM17.2089 12.4856C16.3886 12.6009 15.6301 12.0293 15.5148 11.2089C15.3995 10.3886 15.9711 9.63008 16.7914 9.51478C17.6118 9.39949 18.3703 9.97106 18.4856 10.7914C18.6009 11.6118 18.0293 12.3703 17.2089 12.4856ZM7.94804 12.1528C7.44948 12.8144 6.50897 12.9466 5.84736 12.448C5.18575 11.9495 5.05357 11.009 5.55213 10.3474C6.05069 9.68575 6.9912 9.55357 7.65281 10.0521C8.31442 10.5507 8.4466 11.4912 7.94804 12.1528ZM15.448 8.40281C14.9495 9.06442 14.009 9.1966 13.3474 8.69804C12.6858 8.19948 12.5536 7.25897 13.0521 6.59736C13.5507 5.93575 14.4912 5.80357 15.1528 6.30213C15.8144 6.80069 15.9466 7.7412 15.448 8.40281ZM9.69804 16.4028C9.19948 17.0644 8.25897 17.1966 7.59736 16.698C6.93575 16.1995 6.80357 15.259 7.30213 14.5974C7.80069 13.9358 8.7412 13.8036 9.40281 14.3021C10.0644 14.8007 10.1966 15.7412 9.69804 16.4028Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-label">Design</span>
+      </div>
+
+      <!-- 7. Settings — settings-24 -->
+      <div class="icon-nav-item">
+        <div class="nav-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.8516 19.7135L11.0938 20.5945C11.009 20.6803 10.8811 20.7869 10.7116 20.8917C10.1971 21.2095 9.60545 21.3147 9.01102 21.0254C8.67893 20.8641 8.28163 20.6725 7.73851 20.4114C7.263 20.183 7.263 20.183 6.82686 19.9735C6.42127 19.779 6.14206 19.4688 6.00082 19.0906C5.87962 18.7659 5.87234 18.445 5.92763 18.1464C5.93485 18.1074 5.94256 18.0724 5.95028 18.0417L6.12895 16.9465L5.88759 16.6329L4.75094 16.5475C4.52858 16.5174 4.24415 16.432 3.95059 16.247C3.55815 15.9997 3.26704 15.6301 3.15162 15.1399C3.083 14.8489 3.0011 14.4933 2.9025 14.0595C2.89431 14.0235 2.89431 14.0235 2.88613 13.9874C2.81274 13.6642 2.57448 12.6078 2.591 12.6809C2.44914 12.0534 2.68741 11.5282 3.12697 11.1763C3.3147 11.026 3.49789 10.9351 3.57218 10.914L4.46831 10.4946L4.52289 10.22L3.88755 9.46966C3.83028 9.39451 3.76087 9.28563 3.69374 9.14583C3.50853 8.76019 3.43701 8.34147 3.57578 7.90812C3.62406 7.75735 3.69701 7.61424 3.79371 7.48279C3.96656 7.24731 4.25339 6.8832 4.65933 6.37954C4.8806 6.10521 5.4527 5.40071 5.5208 5.31629C5.73918 5.04612 6.02255 4.87216 6.33959 4.79128C6.66276 4.70883 6.97922 4.72767 7.27903 4.8038C7.3779 4.82891 7.45715 4.85591 7.52494 4.88388L8.5179 5.31107L8.8828 5.1616L9.18305 4.13938C9.21064 3.93483 9.29156 3.70018 9.46247 3.46539C9.77941 3.02998 10.3022 2.7793 10.9842 2.7793H13.2882C13.9088 2.7793 14.391 3.048 14.689 3.48287C14.8445 3.7098 14.9236 3.93212 14.9575 4.12052L15.2763 5.22708L15.5587 5.36235L16.5563 4.9014C16.6138 4.87879 16.6956 4.85197 16.7978 4.82681C17.0796 4.75748 17.3744 4.73504 17.6756 4.79397C18.0242 4.86221 18.3368 5.03631 18.5716 5.32696C18.8396 5.6586 19.9665 7.07575 19.9852 7.09918C20.4884 7.73065 20.5036 8.42314 20.22 9.01433C20.1517 9.15684 20.0791 9.2663 20.0481 9.30131L19.3676 10.2589L19.428 10.5426L20.4524 11.0694C20.5937 11.1404 20.7697 11.2589 20.9459 11.4378C21.3448 11.8427 21.5518 12.383 21.4188 13.009C21.3617 13.2782 21.3005 13.5554 21.2313 13.8594C21.1835 14.0697 21.133 14.2879 21.0702 14.5567C21.0377 14.6959 20.9882 14.9068 20.9051 15.2613C20.7844 15.7777 20.4737 16.1571 20.0548 16.3923C19.741 16.5684 19.4398 16.6347 19.2012 16.6466L18.0527 16.6995L17.8408 16.947L18.0465 18.0888C18.0526 18.124 18.0526 18.124 18.0615 18.1984C18.0914 18.4877 18.069 18.8046 17.9481 19.1257C17.8004 19.5179 17.5234 19.8421 17.1168 20.0405C16.7605 20.2153 16.3801 20.3993 15.8992 20.63C15.7858 20.6844 15.7858 20.6844 15.6723 20.7387C15.3542 20.891 15.3542 20.891 15.0386 21.042C14.408 21.3442 13.7948 21.2267 13.2917 20.8739C13.1225 20.7553 12.9986 20.6345 12.9231 20.5429L12.2203 19.712L11.8516 19.7135ZM10.9369 18.4765C11.0787 18.3112 11.2854 18.2157 11.5032 18.2148L12.5641 18.2106C12.7859 18.2097 12.9966 18.307 13.1398 18.4763L14.074 19.581C14.0759 19.5833 14.1068 19.6134 14.1529 19.6458C14.2512 19.7147 14.3127 19.7265 14.3906 19.6891C14.707 19.5378 14.707 19.5378 15.0244 19.3859C15.1375 19.3317 15.1375 19.3317 15.2505 19.2775C15.7277 19.0486 16.1045 18.8664 16.4575 18.6932C16.5051 18.67 16.5261 18.6454 16.5443 18.5971C16.5707 18.527 16.5775 18.4305 16.5695 18.3526C16.5685 18.3445 16.4791 17.8478 16.3015 16.8626C16.2615 16.6409 16.3234 16.4131 16.4698 16.2419L17.1242 15.4775C17.2589 15.3201 17.4526 15.2255 17.6595 15.216L19.1295 15.1483C19.1542 15.1471 19.2437 15.1274 19.3206 15.0842C19.3902 15.0452 19.4252 15.0024 19.4445 14.9197C19.5279 14.5639 19.5772 14.3538 19.6096 14.2153C19.6718 13.9492 19.7216 13.7338 19.7687 13.5268C19.8363 13.2295 19.896 12.9592 19.9515 12.6974C19.969 12.6153 19.949 12.5633 19.8774 12.4905C19.8315 12.444 19.7853 12.4129 19.7725 12.4064L18.4257 11.7139C18.2255 11.611 18.0821 11.4235 18.0351 11.2033L17.8318 10.2493C17.7881 10.0439 17.8324 9.82961 17.954 9.65846L18.8568 8.3913C18.9214 8.25346 18.9195 8.16877 18.8126 8.03456C18.7908 8.00729 17.6686 6.59597 17.405 6.26975C17.3315 6.2551 17.2441 6.26175 17.1562 6.28337C17.1424 6.28676 16.7131 6.48288 15.8682 6.87174C15.6652 6.96575 15.4308 6.96424 15.2291 6.86761L14.3248 6.43455C14.1317 6.34207 13.9874 6.17147 13.9281 5.96573L13.5035 4.49185L13.4805 4.38124C13.4821 4.39399 13.4713 4.35943 13.4515 4.33067C13.4262 4.29369 13.4004 4.2793 13.2882 4.2793H10.9842C10.7693 4.2793 10.7017 4.31172 10.6752 4.34815C10.6724 4.35198 10.6613 4.40113 10.6418 4.4956L10.2204 5.93031C10.1561 6.14898 9.99597 6.32658 9.78507 6.41297L8.79507 6.8185C8.60868 6.89486 8.3994 6.89302 8.21438 6.81342L6.94344 6.26653C6.8321 6.23792 6.75506 6.23333 6.7104 6.24472C6.61815 6.34502 6.04606 7.04952 5.85943 7.28088C5.84332 7.30085 5.84332 7.30085 5.82722 7.32082C5.4369 7.80512 5.15977 8.15687 5.00405 8.36883C5.00431 8.38259 5.01466 8.43143 5.04588 8.49645C5.06079 8.52748 5.07423 8.55007 5.06617 8.54188L5.90102 9.52633C6.04897 9.70079 6.10921 9.93324 6.06463 10.1576L5.86557 11.1593C5.81906 11.3933 5.66396 11.5912 5.44785 11.6924L4.13411 12.3025C4.13507 12.3022 4.09748 12.3208 4.06444 12.3473C4.05386 12.3494 4.27829 13.3443 4.3489 13.6553C4.35705 13.6912 4.35705 13.6912 4.36519 13.727C4.46297 14.1572 4.54405 14.5093 4.61163 14.7959C4.63046 14.8758 4.67211 14.9287 4.75028 14.978C4.83251 15.0298 4.92386 15.0572 4.90701 15.0563L6.33324 15.1622C6.546 15.178 6.74196 15.2836 6.87207 15.4527L7.51584 16.2892C7.64228 16.4535 7.69508 16.6627 7.6617 16.8674L7.42452 18.3211L7.40018 18.424C7.39252 18.4737 7.39387 18.5332 7.40606 18.5659C7.41301 18.5845 7.42341 18.596 7.47606 18.6213C7.91227 18.8308 7.91227 18.8308 8.37164 19.0515C8.93318 19.3214 9.33208 19.5137 9.66697 19.6764C9.72312 19.7038 9.80355 19.6895 9.92325 19.6155C9.9736 19.5844 10.0106 19.5548 9.99868 19.5703L10.9369 18.4765ZM15.9461 12.1057C15.9461 14.2743 14.1883 16.0321 12.0196 16.0321C9.85093 16.0321 8.09314 14.2743 8.09314 12.1057C8.09314 9.93698 9.85093 8.17919 12.0196 8.17919C14.1883 8.17919 15.9461 9.93698 15.9461 12.1057ZM14.4461 12.1057C14.4461 10.7654 13.3599 9.67919 12.0196 9.67919C10.6794 9.67919 9.59314 10.7654 9.59314 12.1057C9.59314 13.4459 10.6794 14.5321 12.0196 14.5321C13.3599 14.5321 14.4461 13.4459 14.4461 12.1057Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-label">Settings</span>
+      </div>
+
+    </div><!-- /icon-nav-items -->
+
+    <!-- Bottom group: KB tiles + Add KB button -->
+    <div class="kb-section">
+      <div class="kb-tiles">
+        <!-- A tile: Yellow300 #F6B62A -->
+        <div class="kb-tile" style="background: #F6B62A;">A</div>
+        <!-- D tile: Green400 #2C9F72 -->
+        <div class="kb-tile" style="background: #2C9F72;">D</div>
+        <!-- S tile: Teal500 #007D78, active/current (32×32) -->
+        <div class="kb-tile kb-tile-lg" style="background: #007D78;">S</div>
+      </div>
+      <!-- Add KB button: 36×36, Plus-16 icon, icon-default-with-text color -->
+      <div class="kb-add-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.25 7.25V2.75C7.25 2.33579 7.58579 2 8 2C8.41421 2 8.75 2.33579 8.75 2.75V7.25H13.25C13.6642 7.25 14 7.58579 14 8C14 8.41421 13.6642 8.75 13.25 8.75H8.75V13.25C8.75 13.6642 8.41421 14 8 14C7.58579 14 7.25 13.6642 7.25 13.25V8.75H2.75C2.33579 8.75 2 8.41421 2 8C2 7.58579 2.33579 7.25 2.75 7.25H7.25Z" fill="currentColor"/>
+        </svg>
+      </div>
+    </div><!-- /kb-section -->
+
+  </aside><!-- /col-icon-nav -->
+
+  <!-- ============================================================
+       ZONE 3 — COLUMN 2: SETTINGS NAV
+       280px wide, padding-top 36px, scroll independent
+  ============================================================ -->
+  <aside class="col-settings-nav">
+    <!-- Section label: 11px / 600 / uppercase / ls 0.08em / text-light-grey -->
+    <p class="settings-section-label">Agent Assist Settings</p>
+
+    <!-- List Item — Basic component, three items -->
+    <div class="settings-nav-items">
+      <div class="settings-nav-item" onclick="setActive(this)">General</div>
+      <div class="settings-nav-item is-active" onclick="setActive(this)">Recommendation filters</div>
+      <div class="settings-nav-item" onclick="setActive(this)">Tools &amp; Rules</div>
+    </div>
+  </aside><!-- /col-settings-nav -->
+
+  <!-- ============================================================
+       ZONE 4 — COLUMN 3: MAIN CONTENT
+       flex: 1, padding: 40px, content max-width: 800px centered
+  ============================================================ -->
+  <main class="col-content">
+    <div class="content-inner">
+
+      <!-- Header block: title + subtitle, pb 24px -->
+      <div class="content-header">
+        <!-- Head 0: 32px / 400 / lh 48px / ls -0.64px -->
+        <h1 class="content-title">Recommendation filters</h1>
+        <!-- UI: 14px / 400 / lh 20px / text-subtle -->
+        <p class="content-subtitle">Control which guides AI Agent Assist recommends when a ticket opens. Use conditions based on folder, title, tag, or custom metadata to match guides to the right ticket types.</p>
+      </div>
+
+      <!-- Filter card — py-24 px-32, flex column -->
+      <div class="filter-card" id="filter-card">
+
+        <!-- Card header: Add filter + Save -->
+        <div class="filter-card-header">
+          <div class="add-filter-btn" onclick="addFilterRow()">
+            <div class="add-filter-circle">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.25 7.25V2.75C7.25 2.33579 7.58579 2 8 2C8.41421 2 8.75 2.33579 8.75 2.75V7.25H13.25C13.6642 7.25 14 7.58579 14 8C14 8.41421 13.6642 8.75 13.25 8.75H8.75V13.25C8.75 13.6642 8.41421 14 8 14C7.58579 14 7.25 13.6642 7.25 13.25V8.75H2.75C2.33579 8.75 2 8.41421 2 8C2 7.58579 2.33579 7.25 2.75 7.25H7.25Z" fill="currentColor"/>
+              </svg>
+            </div>
+            <span class="add-filter-label">Add filter</span>
+          </div>
+          <button class="save-btn">Save</button>
+        </div>
+
+        <div class="filter-card-body">
+
+          <!-- Empty state: shown when no rows -->
+          <div class="filter-empty-add">
+            <div class="add-filter-btn" onclick="addFilterRow()">
+              <div class="add-filter-circle">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.25 7.25V2.75C7.25 2.33579 7.58579 2 8 2C8.41421 2 8.75 2.33579 8.75 2.75V7.25H13.25C13.6642 7.25 14 7.58579 14 8C14 8.41421 13.6642 8.75 13.25 8.75H8.75V13.25C8.75 13.6642 8.41421 14 8 14C7.58579 14 7.25 13.6642 7.25 13.25V8.75H2.75C2.33579 8.75 2 8.41421 2 8C2 7.58579 2.33579 7.25 2.75 7.25H7.25Z" fill="currentColor"/>
+                </svg>
+              </div>
+              <span class="add-filter-label">Add filter</span>
+            </div>
+          </div>
+
+          <!-- Condition rows are injected here by JS -->
+          <div id="filter-rows-container"></div>
+
+        </div><!-- /filter-card-body -->
+
+      </div><!-- /filter-card -->
+
+    </div><!-- /content-inner -->
+  </main><!-- /col-content -->
+
+</div><!-- /main-layout -->
+
+<script>
+  /* ---- Settings nav ---- */
+  function setActive(el) {
+    document.querySelectorAll('.settings-nav-item').forEach(function(item) {
+      item.classList.remove('is-active');
+    });
+    el.classList.add('is-active');
+  }
+
+  /* ---- Filter rows ---- */
+  var rowCounter = 0;
+  var groupCounter = 0;
+
+  var CARET_SVG = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>';
+
+  var MORE_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg>';
+
+  var TICK_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2071 4.29289C13.5976 4.68342 13.5976 5.31658 13.2071 5.70711L6.70711 12.2071C6.31658 12.5976 5.68342 12.5976 5.29289 12.2071L2.79289 9.70711C2.40237 9.31658 2.40237 8.68342 2.79289 8.29289C3.18342 7.90237 3.81658 7.90237 4.20711 8.29289L6 10.0858L11.7929 4.29289C12.1834 3.90237 12.8166 3.90237 13.2071 4.29289Z" fill="#2C9F72"/></svg>';
+
+  var SEARCH_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12C8.1133 12 9.14463 11.6408 9.98049 11.0282L12.4761 13.5238C12.7691 13.8167 13.2441 13.8167 13.5371 13.5238C13.8299 13.2307 13.8299 12.7558 13.537 12.4629L11.0413 9.96721C11.6408 9.13539 12 8.10752 12 7C12 4.23858 9.76142 2 7 2ZM3.5 7C3.5 5.067 5.067 3.5 7 3.5C8.933 3.5 10.5 5.067 10.5 7C10.5 8.933 8.933 10.5 7 10.5C5.067 10.5 3.5 8.933 3.5 7Z" fill="currentColor"/></svg>';
+
+  var CHEVRON_RIGHT_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 3.29289C5.68342 2.90237 6.31658 2.90237 6.70711 3.29289L10.7071 7.29289C11.0976 7.68342 11.0976 8.31658 10.7071 8.70711L6.70711 12.7071C6.31658 13.0976 5.68342 13.0976 5.29289 12.7071C4.90237 12.3166 4.90237 11.6834 5.29289 11.2929L8.58579 8L5.29289 4.70711C4.90237 4.31658 4.90237 3.68342 5.29289 3.29289Z" fill="currentColor"/></svg>';
+
+  var CHEVRON_LEFT_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.7071 3.29289C10.3166 2.90237 9.68342 2.90237 9.29289 3.29289L5.29289 7.29289C4.90237 7.68342 4.90237 8.31658 5.29289 8.70711L9.29289 12.7071C9.68342 13.0976 10.3166 13.0976 10.7071 12.7071C11.0976 12.3166 11.0976 11.6834 10.7071 11.2929L7.41421 8L10.7071 4.70711C11.0976 4.31658 11.0976 3.68342 10.7071 3.29289Z" fill="currentColor"/></svg>';
+
+  var NESTED_COND_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.74977 8.25C3.93101 8.25001 4.10611 8.31564 4.2427 8.43477C4.37929 8.55389 4.46812 8.71845 4.49277 8.898L4.49977 9V11H6.49977C6.68979 11.0001 6.87271 11.0722 7.01156 11.202C7.15041 11.3317 7.23485 11.5093 7.2478 11.6989C7.26075 11.8885 7.20126 12.0759 7.08134 12.2233C6.96142 12.3707 6.79002 12.4671 6.60177 12.493L6.49977 12.5H4.49977V14.5C4.49971 14.69 4.42753 14.8729 4.2978 15.0118C4.16807 15.1506 3.99047 15.2351 3.80089 15.248C3.61131 15.261 3.42388 15.2015 3.27647 15.0816C3.12907 14.9617 3.03267 14.7902 3.00677 14.602L2.99977 14.5V12.5H0.999771C0.809748 12.4999 0.62683 12.4278 0.48798 12.298C0.349129 12.1683 0.264697 11.9907 0.251745 11.8011C0.238793 11.6115 0.298287 11.4241 0.418204 11.2767C0.538121 11.1293 0.709521 11.0329 0.897771 11.007L0.999771 11H2.99977V9C2.99977 8.80109 3.07879 8.61032 3.21944 8.46967C3.36009 8.32902 3.55086 8.25 3.74977 8.25ZM10.9998 9C12.2588 9 13.3198 9.846 13.6468 11H14.9998C15.1898 11.0001 15.3727 11.0722 15.5116 11.202C15.6504 11.3317 15.7348 11.5093 15.7478 11.6989C15.7607 11.8885 15.7013 12.0759 15.5813 12.2233C15.4614 12.3707 15.29 12.4671 15.1018 12.493L14.9998 12.5H13.6458C13.4649 13.1388 13.0591 13.6906 12.5031 14.0536C11.9472 14.4165 11.2788 14.5661 10.6212 14.4747C9.96359 14.3833 9.36127 14.0571 8.9254 13.5563C8.48954 13.0555 8.24956 12.4139 8.24977 11.75C8.24977 11.0207 8.5395 10.3212 9.05523 9.80546C9.57095 9.28973 10.2704 9 10.9998 9ZM10.9998 10.5C10.6683 10.5 10.3503 10.6317 10.1159 10.8661C9.88147 11.1005 9.74977 11.4185 9.74977 11.75C9.74977 12.0815 9.88147 12.3995 10.1159 12.6339C10.3503 12.8683 10.6683 13 10.9998 13C11.3313 13 11.6492 12.8683 11.8837 12.6339C12.1181 12.3995 12.2498 12.0815 12.2498 11.75C12.2498 11.4185 12.1181 11.1005 11.8837 10.8661C11.6492 10.6317 11.3313 10.5 10.9998 10.5ZM5.99977 1C6.59839 0.999946 7.18068 1.19522 7.65823 1.55618C8.13578 1.91714 8.48251 2.42407 8.64577 3H14.7498C14.9398 3.00006 15.1227 3.07224 15.2616 3.20197C15.4004 3.3317 15.4848 3.5093 15.4978 3.69888C15.5107 3.88846 15.4513 4.07589 15.3313 4.2233C15.2114 4.37071 15.04 4.4671 14.8518 4.493L14.7498 4.5H8.64677C8.48271 5.07534 8.13562 5.58155 7.65807 5.94195C7.18053 6.30235 6.59855 6.49732 6.00027 6.49732C5.40199 6.49732 4.82001 6.30235 4.34247 5.94195C3.86493 5.58155 3.51784 5.07534 3.35377 4.5H1.24977C1.05975 4.49994 0.87683 4.42776 0.73798 4.29803C0.599129 4.1683 0.514697 3.9907 0.501745 3.80112C0.488793 3.61154 0.548287 3.42411 0.668204 3.2767C0.788121 3.12929 0.959521 3.0329 1.14777 3.007L1.24977 3H3.35277C3.51637 2.42408 3.86333 1.91721 4.34101 1.55629C4.8187 1.19536 5.40106 1.00006 5.99977 1ZM5.99977 2.5C5.66825 2.5 5.35031 2.6317 5.11589 2.86612C4.88147 3.10054 4.74977 3.41848 4.74977 3.75C4.74977 4.08152 4.88147 4.39946 5.11589 4.63388C5.35031 4.8683 5.66825 5 5.99977 5C6.33129 5 6.64923 4.8683 6.88365 4.63388C7.11807 4.39946 7.24977 4.08152 7.24977 3.75C7.24977 3.41848 7.11807 3.10054 6.88365 2.86612C6.64923 2.6317 6.33129 2.5 5.99977 2.5Z" fill="currentColor"/></svg>';
+
+  var REMOVE_COND_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2ZM0.5 8C0.5 3.85786 3.85786 0.5 8 0.5C12.1421 0.5 15.5 3.85786 15.5 8C15.5 12.1421 12.1421 15.5 8 15.5C3.85786 15.5 0.5 12.1421 0.5 8ZM5.25 8C5.25 7.58579 5.58579 7.25 6 7.25H10C10.4142 7.25 10.75 7.58579 10.75 8C10.75 8.41421 10.4142 8.75 10 8.75H6C5.58579 8.75 5.25 8.41421 5.25 8Z" fill="currentColor"/></svg>';
+
+  var ICONS = {
+    Location: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.17464 4H14.25C14.9404 4 15.5 4.55964 15.5 5.25V12.75C15.5 13.4404 14.9404 14 14.25 14H1.75C1.05964 14 0.5 13.4404 0.5 12.75L0.5 3.25C0.5 2.55964 1.05964 2 1.75 2H5.9669C6.40598 2 6.81287 2.23037 7.03877 2.60688L8.17464 4ZM2 3.5V12.5H14V5.5H8.0331C7.59402 5.5 7.18713 5.26963 6.96123 4.89312L5.82536 3.5H2Z" fill="currentColor"/></svg>',
+    Tag: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.25672 0.849976C7.97816 0.849976 7.71449 0.906088 7.46989 1.00232L7.46292 1.00506L7.45602 1.00793C7.20803 1.11125 6.97551 1.26218 6.77778 1.45988L6.77752 1.46015L1.46267 6.77991L1.4624 6.78018C1.07134 7.17135 0.849976 7.69746 0.849976 8.2561C0.849976 8.81064 1.0658 9.33882 1.46386 9.73348L1.46551 9.73512L6.26812 14.5374C6.65935 14.9286 7.18559 15.15 7.74434 15.15C8.29888 15.15 8.82709 14.9342 9.22178 14.5361L9.22339 14.5345L11.3795 12.3787L11.3795 12.3787L14.5384 9.22004C14.7635 8.9949 14.9364 8.71676 15.0384 8.41495C15.1391 8.11703 15.1728 7.79536 15.1348 7.48255L15.1348 7.48255L15.1342 7.47845L14.5922 3.21812L14.5919 3.21605C14.4696 2.2754 13.7306 1.53153 12.7844 1.40905L12.7828 1.40884L8.52698 0.867432C8.42698 0.853549 8.33496 0.849976 8.25672 0.849976ZM7.83865 2.52033C7.88875 2.47031 7.95197 2.42727 8.0262 2.3954C8.10942 2.36354 8.18498 2.34998 8.25672 2.34998C8.2906 2.34998 8.31011 2.35166 8.32141 2.35328L8.3214 2.35337L8.33282 2.35482L12.5919 2.89664L12.5925 2.89672C12.86 2.93165 13.0692 3.14126 13.1043 3.40874L13.1044 3.40951L13.6457 7.66367L13.6459 7.66529C13.6563 7.75313 13.6466 7.84819 13.6174 7.93457C13.5893 8.0176 13.5399 8.0972 13.4778 8.15933L10.3189 11.318L10.3189 11.318L8.15995 13.4766L8.15995 13.4766L8.15711 13.4795C8.04786 13.5899 7.90458 13.65 7.74434 13.65C7.58756 13.65 7.44163 13.5895 7.32874 13.4767L2.52329 8.67159L2.52329 8.67158L2.52044 8.66876C2.41001 8.55951 2.34998 8.41627 2.34998 8.2561C2.34998 8.09939 2.41039 7.9535 2.52329 7.84062L2.52355 7.84035L7.8384 2.52059L7.83865 2.52033ZM9.49997 4.24998C8.8988 4.24998 8.33242 4.48518 7.90879 4.9088C7.48467 5.33292 7.24997 5.90216 7.24997 6.49998C7.24997 7.0978 7.48467 7.66703 7.90879 8.09115C8.33291 8.51527 8.90215 8.74998 9.49997 8.74998C10.0978 8.74998 10.667 8.51527 11.0911 8.09115C11.5153 7.66703 11.75 7.0978 11.75 6.49998C11.75 5.89881 11.5148 5.33242 11.0911 4.9088C10.667 4.48468 10.0978 4.24998 9.49997 4.24998ZM8.96945 5.96946C9.11197 5.82695 9.29691 5.74998 9.49997 5.74998C9.70109 5.74998 9.88847 5.82744 10.0305 5.96946C10.173 6.11198 10.25 6.29691 10.25 6.49998C10.25 6.7011 10.1725 6.88848 10.0305 7.03049C9.88847 7.17251 9.70109 7.24998 9.49997 7.24998C9.29885 7.24998 9.11147 7.17251 8.96945 7.03049C8.82744 6.88848 8.74997 6.7011 8.74997 6.49998C8.74997 6.29885 8.82744 6.11148 8.96945 5.96946Z" fill="currentColor"/></svg>',
+    Title: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.04 0.23999H2.96C2.57278 0.23999 2.20143 0.393811 1.92762 0.667614C1.65382 0.941417 1.5 1.31277 1.5 1.69999V2.95999C1.5 3.181 1.5878 3.39297 1.74408 3.54925C1.90036 3.70553 2.11232 3.79332 2.33333 3.79332C2.55435 3.79332 2.76631 3.70553 2.92259 3.54925C3.07887 3.39297 3.16667 3.181 3.16667 2.95999V2.07332C3.16667 2.02912 3.18423 1.98673 3.21548 1.95547C3.24674 1.92422 3.28913 1.90666 3.33333 1.90666H7C7.0442 1.90666 7.0866 1.92422 7.11785 1.95547C7.14911 1.98673 7.16667 2.02912 7.16667 2.07332V13.9267C7.16667 13.9709 7.14911 14.0133 7.11785 14.0445C7.0866 14.0758 7.0442 14.0933 7 14.0933H5.79333C5.57232 14.0933 5.36036 14.1811 5.20408 14.3374C5.0478 14.4937 4.96 14.7056 4.96 14.9267C4.96 15.1477 5.0478 15.3596 5.20408 15.5159C5.36036 15.6722 5.57232 15.76 5.79333 15.76H10.2067C10.4277 15.76 10.6396 15.6722 10.7959 15.5159C10.9522 15.3596 11.04 15.1477 11.04 14.9267C11.04 14.7056 10.9522 14.4937 10.7959 14.3374C10.6396 14.1811 10.4277 14.0933 10.2067 14.0933H9C8.9558 14.0933 8.9134 14.0758 8.88215 14.0445C8.85089 14.0133 8.83333 13.9709 8.83333 13.9267V2.07332C8.83333 2.02912 8.85089 1.98673 8.88215 1.95547C8.9134 1.92422 8.9558 1.90666 9 1.90666H12.6667C12.7109 1.90666 12.7533 1.92422 12.7845 1.95547C12.8158 1.98673 12.8333 2.02912 12.8333 2.07332V2.95999C12.8333 3.181 12.9211 3.39297 13.0774 3.54925C13.2337 3.70553 13.4457 3.79332 13.6667 3.79332C13.8877 3.79332 14.0996 3.70553 14.2559 3.54925C14.4122 3.39297 14.5 3.181 14.5 2.95999V1.69999C14.5 1.31277 14.3462 0.941417 14.0724 0.667614C13.7986 0.393811 13.4272 0.23999 13.04 0.23999Z" fill="currentColor"/></svg>',
+    'Custom Metadata': '<svg width="16" height="16" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.8311 10.4138C13.9814 10.1232 14.3392 10.0097 14.6299 10.1599L15.4609 10.5896C15.7918 10.7611 15.9999 11.1027 16 11.4754C16 11.811 15.831 12.1216 15.5557 12.3054L15.46 12.3621L8.73828 15.8396C8.31738 16.057 7.82392 16.0772 7.38965 15.8992L7.26172 15.8396L0.539062 12.3621C0.207913 12.1905 0 11.8483 0 11.4754C0.000149251 11.1027 0.207973 10.7613 0.539062 10.5896L1.36816 10.1609C1.65875 10.0108 2.01566 10.1243 2.16602 10.4148C2.31639 10.7055 2.2028 11.0633 1.91211 11.2136L1.4043 11.4754L7.80566 14.7869C7.90302 14.8371 8.01513 14.8471 8.11816 14.8171L8.19336 14.7869L14.5938 11.4754L14.0859 11.2127C13.7953 11.0623 13.6808 10.7045 13.8311 10.4138ZM13.8311 6.93824C13.9814 6.64768 14.3393 6.53329 14.6299 6.68336L15.4609 7.11305C15.792 7.28461 16 7.62686 16 7.99976C16 8.33545 15.831 8.64597 15.5557 8.82984L15.46 8.88648L8.73828 12.364C8.31737 12.5814 7.82393 12.6006 7.38965 12.4226L7.26172 12.363L0.539062 8.88648C0.207856 8.71496 0 8.37275 0 7.99976C1.56144e-06 7.62684 0.207718 7.28472 0.539062 7.11305L1.36816 6.68433C1.65875 6.5344 2.01574 6.64872 2.16602 6.93922C2.31624 7.22985 2.20269 7.58671 1.91211 7.73707L1.40527 7.99879L7.80566 11.3103C7.90312 11.3606 8.01502 11.3707 8.11816 11.3406L8.19336 11.3103L14.5938 7.99879L14.0859 7.73609C13.7954 7.5858 13.681 7.22885 13.8311 6.93824ZM7.26172 0.179452C7.68252 -0.0378597 8.17527 -0.0579073 8.60938 0.119881L8.73828 0.179452L15.4727 3.6609C15.796 3.8379 15.9999 4.17544 16 4.54469C16 4.88032 15.8311 5.19079 15.5557 5.37476L15.46 5.4314L8.73828 8.90504C8.31737 9.12241 7.82393 9.14162 7.38965 8.96363L7.26172 8.90504L0.539062 5.4275C0.207869 5.25597 0 4.91376 0 4.54078C7.25878e-05 4.20518 0.168282 3.89444 0.443359 3.7107L0.539062 3.65504L7.26172 0.179452ZM7.88086 1.20191L7.80566 1.23219L1.4043 4.54078L7.80566 7.85133C7.87878 7.88909 7.96034 7.90476 8.04004 7.89723L8.11816 7.8816L8.19434 7.8523L14.5977 4.54176L8.19434 1.23219C8.09684 1.18184 7.9841 1.17177 7.88086 1.20191Z" fill="currentColor"/></svg>'
+  };
+
+  var OPERATORS = {
+    Location: ['Is', 'Is not'],
+    Tag: ['Is', 'Is not'],
+    Title: ['Contains', "Doesn't contain", 'Starts with'],
+    'Custom Metadata': ['Is', 'Is not']
+  };
+
+  var FOLDERS = ['Team home folder', 'Knowledge Base 1', 'Getting started', 'Another folder', 'Account Settings & Admin', 'Features and Troubleshooting'];
+
+  var TAGS = [
+    { name: 'Keyword',             bg: '#d9eafe', color: '#5a8be8' },
+    { name: 'Category',            bg: '#e8e6f8', color: '#8d83d2' },
+    { name: 'Content Description', bg: '#e8e6f8', color: '#8d83d2' },
+    { name: 'Content Type',        bg: '#ffe0ed', color: '#f74d7e' },
+    { name: 'Information',         bg: '#d9eafe', color: '#5a8be8' },
+    { name: 'Document',            bg: '#ffe0ed', color: '#f74d7e' }
+  ];
+
+  var CUSTOM_META = [
+    { name: 'Keyword',     color: '#5a8be8', dotBg: '#eef6fe', values: ['Assignee', 'Guides', 'Team'] },
+    { name: 'Category',    color: '#2c9f72', dotBg: '#e8f9f0', values: ['Support', 'Sales', 'Marketing'] },
+    { name: 'Information', color: '#5a8be8', dotBg: '#eef6fe', values: ['Product', 'Engineering', 'Design'] }
+  ];
+
+  var PLATFORMS = [
+    { name: 'Freshdesk',  color: '#00B8A9' },
+    { name: 'Salesforce', color: '#1589EE' },
+    { name: 'ServiceNow', color: '#00A850' },
+    { name: 'Zendesk',    color: '#1F73B7' }
+  ];
+
+  var PLATFORM_FIELDS = ['Assignee', 'Assumption Agreement', 'Country', 'Description', 'Email', 'Group', 'Status'];
+
+  function buildDropdownItems(rowId) {
+    var allItems = ['Location', 'Tag', 'Title', 'Custom Metadata'];
+    var itemsHtml = '';
+    allItems.forEach(function(label) {
+      itemsHtml += '<div class="dropdown-item" onmouseenter="this.classList.add(\'is-hover\')" onmouseleave="this.classList.remove(\'is-hover\')" onclick="selectFilterType(event,\'' + rowId + '\',\'' + label + '\')">' +
+        '<span class="item-icon">' + ICONS[label] + '</span>' +
+        '<span class="item-label">' + label + '</span>' +
+        '</div>';
+    });
+    return '<div class="dropdown-section">' + itemsHtml + '</div>' +
+           '<div class="dropdown-bottom-divider"></div>';
+  }
+
+  function buildOperatorItems(rowId, type) {
+    var ops = OPERATORS[type] || [];
+    var itemsHtml = '';
+    ops.forEach(function(op, idx) {
+      var sel = idx === 0 ? ' is-selected' : '';
+      itemsHtml += '<div class="op-item' + sel + '" ' +
+        'onmouseenter="this.classList.add(\'is-hover\')" ' +
+        'onmouseleave="this.classList.remove(\'is-hover\')" ' +
+        'onclick="selectOperator(event,\'' + rowId + '\',this)">' +
+        '<span class="op-item-label">' + op + '</span>' +
+        '<span class="op-item-tick">' + TICK_SVG + '</span>' +
+        '</div>';
+    });
+    return '<div class="dropdown-section">' + itemsHtml + '</div>' +
+           '<div class="dropdown-bottom-divider"></div>';
+  }
+
+  function buildPickerItems(rowId, type) {
+    var html = '';
+    if (type === 'Location') {
+      FOLDERS.forEach(function(name) {
+        html += '<div class="folder-item" onclick="selectFolder(event,\'' + rowId + '\',\'' + name.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + '\')">' +
+          '<span class="folder-item-icon">' + ICONS.Location + '</span>' +
+          '<span class="folder-item-name">' + name + '</span>' +
+          '</div>';
+      });
+    } else if (type === 'Tag') {
+      TAGS.forEach(function(tag) {
+        html += '<div class="tag-badge-row" onclick="selectTag(event,\'' + rowId + '\',\'' + tag.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + '\',\'' + tag.bg + '\',\'' + tag.color + '\')">' +
+          '<div class="tag-badge" style="background:' + tag.bg + ';">' +
+          '<div class="tag-color-sq" style="background:' + tag.color + ';"></div>' +
+          '<span class="tag-name">' + tag.name + '</span>' +
+          '</div>' +
+          '</div>';
+      });
+    } else {
+      CUSTOM_META.forEach(function(tag) {
+        html += '<div class="tag-item">' +
+          '<div class="tag-chip" onclick="selectCustomMeta(event,\'' + rowId + '\',\'' + tag.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + '\',\'' + tag.bg + '\',\'' + tag.border + '\')">' +
+          '<span class="tag-dot" style="background:' + tag.bg + ';border-color:' + tag.border + ';"></span>' +
+          '<span class="tag-name">' + tag.name + '</span>' +
+          '</div>' +
+          '</div>';
+      });
+    }
+    return html;
+  }
+
+  function buildPickerField(rowId, type) {
+    var placeholder = type === 'Location' ? 'Choose folder' : (type === 'Tag' ? 'Choose tag' : 'Choose custom metadata');
+    var triggerHtml =
+      '<div class="value-trigger" id="picker-trigger-' + rowId + '" onclick="togglePickerDropdown(\'' + rowId + '\')">' +
+        '<span class="val-lead-icon" id="picker-lead-icon-' + rowId + '"></span>' +
+        '<span class="value-trigger-label" id="picker-label-' + rowId + '">' + placeholder + '</span>' +
+        '<span class="value-trigger-arrow">' + CARET_SVG + '</span>' +
+      '</div>';
+    var dropdownHtml =
+      '<div class="picker-dropdown" id="picker-dropdown-' + rowId + '">' +
+        '<div class="picker-search-bar">' +
+          '<span class="fields-search-icon">' + SEARCH_SVG + '</span>' +
+          '<input class="picker-search-input" placeholder="Search" oninput="filterPickerItems(\'' + rowId + '\',this.value)">' +
+        '</div>' +
+        '<div id="picker-items-' + rowId + '" style="padding:0 8px 8px;">' +
+          buildPickerItems(rowId, type) +
+        '</div>' +
+      '</div>';
+    return triggerHtml + dropdownHtml;
+  }
+
+  function buildCMPickerField(rowId) {
+    var fieldsHtml = '<div id="cm-fields-' + rowId + '">' +
+      '<div class="picker-search-bar">' +
+        '<span class="fields-search-icon">' + SEARCH_SVG + '</span>' +
+        '<input class="picker-search-input" placeholder="Search for field" oninput="filterCMFields(\'' + rowId + '\',this.value)">' +
+      '</div>' +
+      '<div id="cm-field-items-' + rowId + '" style="padding:0 8px 8px;">';
+    CUSTOM_META.forEach(function(field) {
+      var safeName = field.name.replace(/'/g, "\\'");
+      fieldsHtml += '<div class="cm-field-item" onclick="openCMValues(event,\'' + rowId + '\',\'' + safeName + '\')">' +
+        '<span class="cm-field-dot" style="background:' + field.dotBg + ';border-color:' + field.color + ';"></span>' +
+        '<span>' + field.name + '</span>' +
+        '<span class="cm-field-chevron">' + CHEVRON_RIGHT_SVG + '</span>' +
+        '</div>';
+    });
+    fieldsHtml += '</div></div>';
+
+    var valuesHtml = '<div id="cm-values-' + rowId + '" style="display:none;">' +
+      '<div class="fields-nav-header">' +
+        '<div class="fields-back-btn" onclick="showCMFields(event,\'' + rowId + '\')">' + CHEVRON_LEFT_SVG + '</div>' +
+        '<span class="fields-nav-title" id="cm-field-title-' + rowId + '">Field</span>' +
+      '</div>' +
+      '<div class="picker-search-bar">' +
+        '<span class="fields-search-icon">' + SEARCH_SVG + '</span>' +
+        '<input class="picker-search-input" placeholder="Search for value" oninput="filterCMValues(\'' + rowId + '\',this.value)">' +
+      '</div>' +
+      '<div id="cm-value-items-' + rowId + '"></div>' +
+      '</div>';
+
+    return '<div class="value-trigger" id="picker-trigger-' + rowId + '" onclick="togglePickerDropdown(\'' + rowId + '\')">' +
+        '<span class="val-lead-icon" id="picker-lead-icon-' + rowId + '"></span>' +
+        '<span class="value-trigger-label" id="picker-label-' + rowId + '">Choose custom metadata</span>' +
+        '<span class="value-trigger-arrow">' + CARET_SVG + '</span>' +
+      '</div>' +
+      '<div class="picker-dropdown" id="picker-dropdown-' + rowId + '">' +
+        fieldsHtml + valuesHtml +
+      '</div>';
+  }
+
+  function openCMValues(event, rowId, fieldName) {
+    event.stopPropagation();
+    var fieldsEl = document.getElementById('cm-fields-' + rowId);
+    var valuesEl = document.getElementById('cm-values-' + rowId);
+    var titleEl  = document.getElementById('cm-field-title-' + rowId);
+    var itemsEl  = document.getElementById('cm-value-items-' + rowId);
+    if (fieldsEl) fieldsEl.style.display = 'none';
+    if (valuesEl) valuesEl.style.display = 'block';
+    if (titleEl) titleEl.textContent = fieldName;
+    var field = CUSTOM_META.filter(function(f) { return f.name === fieldName; })[0];
+    if (field && itemsEl) {
+      var html = '<div style="padding:0 8px 8px;">';
+      field.values.forEach(function(v) {
+        var safeV  = v.replace(/'/g, "\\'");
+        var safeFn = fieldName.replace(/'/g, "\\'");
+        html += '<div class="cm-value-row" onclick="selectCMValue(event,\'' + rowId + '\',\'' + safeFn + '\',\'' + safeV + '\')">' +
+          '<span class="cm-value-pill">' + v + '</span>' +
+          '</div>';
+      });
+      html += '</div>';
+      itemsEl.innerHTML = html;
+    }
+  }
+
+  function showCMFields(event, rowId) {
+    event.stopPropagation();
+    var fieldsEl = document.getElementById('cm-fields-' + rowId);
+    var valuesEl = document.getElementById('cm-values-' + rowId);
+    if (fieldsEl) fieldsEl.style.display = 'block';
+    if (valuesEl) valuesEl.style.display = 'none';
+  }
+
+  function selectCMValue(event, rowId, fieldName, value) {
+    event.stopPropagation();
+    var trigger = document.getElementById('picker-trigger-' + rowId);
+    if (trigger) {
+      var arrowHtml = trigger.querySelector('.value-trigger-arrow').outerHTML;
+      trigger.innerHTML = '<span class="cm-selected-badge">' + value + '</span>' + arrowHtml;
+    }
+    closePickerDropdown(rowId);
+  }
+
+  function filterCMFields(rowId, query) {
+    var container = document.getElementById('cm-field-items-' + rowId);
+    if (!container) return;
+    var q = query.toLowerCase();
+    container.querySelectorAll('.cm-field-item').forEach(function(item) {
+      var nameEl = item.querySelectorAll('span')[1];
+      item.style.display = nameEl && nameEl.textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none';
+    });
+  }
+
+  function filterCMValues(rowId, query) {
+    var container = document.getElementById('cm-value-items-' + rowId);
+    if (!container) return;
+    var q = query.toLowerCase();
+    container.querySelectorAll('.cm-value-row').forEach(function(item) {
+      item.style.display = item.textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none';
+    });
+  }
+
+  function buildSourceField(rowId, filterType) {
+    var items;
+    if (filterType === 'Location') {
+      items = [['Folder', 'Folder'], ['Ticket field value', 'Ticket field value']];
+    } else if (filterType === 'Tag') {
+      items = [['Tag', 'Tag'], ['Ticket field value', 'Ticket field value']];
+    } else if (filterType === 'Custom Metadata') {
+      items = [['Custom metadata value', 'Custom metadata value'], ['Ticket field value', 'Ticket field value']];
+    } else {
+      items = [['Enter field value', 'Enter field value'], ['Ticket field value', 'Ticket field value']];
+    }
+    var itemsHtml = items.map(function(item) {
+      return '<div class="src-item" onclick="selectSource(event,\'' + rowId + '\',\'' + item[1] + '\')">' + item[0] + '</div>';
+    }).join('');
+    return '<div class="value-trigger" id="src-trigger-' + rowId + '" onclick="toggleSrcDropdown(\'' + rowId + '\')">' +
+        '<span class="value-trigger-label" id="src-label-' + rowId + '">Choose source</span>' +
+        '<span class="value-trigger-arrow">' + CARET_SVG + '</span>' +
+      '</div>' +
+      '<div class="src-dropdown" id="src-dropdown-' + rowId + '">' +
+        '<div style="padding:8px;">' +
+          itemsHtml +
+        '</div>' +
+      '</div>';
+  }
+
+  function buildVFField(rowId) {
+    var platformsHtml = '<div id="vf-platforms-' + rowId + '">' +
+      '<div class="vf-section-header"><span class="vf-section-label">Platform</span></div>';
+    PLATFORMS.forEach(function(p) {
+      platformsHtml += '<div class="platform-item" onclick="selectPlatform(event,\'' + rowId + '\',\'' + p.name + '\')">' +
+        '<span class="platform-logo" style="background:' + p.color + ';">' + p.name[0] + '</span>' +
+        '<span class="platform-item-name">' + p.name + '</span>' +
+        '<span class="platform-chevron">' + CHEVRON_RIGHT_SVG + '</span>' +
+        '</div>';
+    });
+    platformsHtml += '<div style="height:8px;"></div></div>';
+
+    var fieldsHtml = '<div id="vf-fields-' + rowId + '" style="display:none;">' +
+      '<div class="fields-nav-header">' +
+        '<div class="fields-back-btn" onclick="showVFPlatforms(event,\'' + rowId + '\')">' + CHEVRON_LEFT_SVG + '</div>' +
+        '<span class="fields-nav-title" id="vf-platform-title-' + rowId + '">Platform</span>' +
+      '</div>' +
+      '<div class="fields-search-area">' +
+        '<span class="fields-search-icon">' + SEARCH_SVG + '</span>' +
+        '<input class="fields-search-input" placeholder="Search for ticket field" oninput="filterFieldItems(\'' + rowId + '\',this.value)">' +
+      '</div>' +
+      '<div class="fields-section-label">Field name:</div>' +
+      '<div id="vf-field-items-' + rowId + '" style="padding:0 8px 8px;">';
+    PLATFORM_FIELDS.forEach(function(f) {
+      fieldsHtml += '<div class="field-item" onclick="selectTicketField(event,\'' + rowId + '\',\'' + f.replace(/'/g, "\\'") + '\')">' + f + '</div>';
+    });
+    fieldsHtml += '</div></div>';
+
+    return '<div class="value-trigger" id="vf-trigger-' + rowId + '" onclick="toggleVFDropdown(\'' + rowId + '\')">' +
+        '<span class="value-trigger-label" id="vf-label-' + rowId + '">Value from</span>' +
+        '<span class="value-trigger-arrow">' + CARET_SVG + '</span>' +
+      '</div>' +
+      '<div class="vf-dropdown" id="vf-dropdown-' + rowId + '">' +
+        platformsHtml + fieldsHtml +
+      '</div>';
+  }
+
+  function buildMoreMenu(rowId, isNested) {
+    if (isNested) {
+      return '<div class="more-menu-item" onclick="event.stopPropagation();addConditionToGroup(\'' + rowId + '\');">' +
+        '<span class="more-menu-item-icon">' + NESTED_COND_SVG + '</span>' +
+        '<span>Add condition</span>' +
+        '</div>' +
+        '<div class="more-menu-item" onclick="event.stopPropagation();removeNestedRow(\'' + rowId + '\');">' +
+        '<span class="more-menu-item-icon">' + REMOVE_COND_SVG + '</span>' +
+        '<span>Remove condition</span>' +
+        '</div>';
+    }
+    return '<div class="more-menu-item" onclick="event.stopPropagation();addNestedCondition(\'' + rowId + '\');">' +
+      '<span class="more-menu-item-icon">' + NESTED_COND_SVG + '</span>' +
+      '<span>Add nested condition</span>' +
+      '</div>' +
+      '<div class="more-menu-item" onclick="event.stopPropagation();deleteRow(\'' + rowId + '\');">' +
+      '<span class="more-menu-item-icon">' + REMOVE_COND_SVG + '</span>' +
+      '<span>Remove condition</span>' +
+      '</div>';
+  }
+
+  function refreshMoreMenu(rowId, isNested) {
+    var menu = document.getElementById('more-menu-' + rowId);
+    if (menu) menu.innerHTML = buildMoreMenu(rowId, isNested);
+  }
+
+  function buildConnector(connId, defaultVal) {
+    var useOr = defaultVal === 'OR';
+    var itemsHtml =
+      '<div class="op-item' + (!useOr ? ' is-selected' : '') + '" onmouseenter="this.classList.add(\'is-hover\')" onmouseleave="this.classList.remove(\'is-hover\')" onclick="selectConnector(event,\'' + connId + '\',this)">' +
+        '<span class="op-item-label">And</span>' +
+        '<span class="op-item-tick">' + TICK_SVG + '</span>' +
+      '</div>' +
+      '<div class="op-item' + (useOr ? ' is-selected' : '') + '" onmouseenter="this.classList.add(\'is-hover\')" onmouseleave="this.classList.remove(\'is-hover\')" onclick="selectConnector(event,\'' + connId + '\',this)">' +
+        '<span class="op-item-label">Or</span>' +
+        '<span class="op-item-tick">' + TICK_SVG + '</span>' +
+      '</div>';
+    return '<div class="connector-trigger" id="connector-trigger-' + connId + '" onclick="toggleConnectorDropdown(\'' + connId + '\')">' +
+      '<span id="connector-label-' + connId + '">' + (useOr ? 'OR' : 'AND') + '</span>' +
+      '<span class="connector-arrow">' + CARET_SVG + '</span>' +
+      '</div>' +
+      '<div class="connector-dropdown" id="connector-dropdown-' + connId + '">' +
+        '<div class="dropdown-section">' + itemsHtml + '</div>' +
+        '<div class="dropdown-bottom-divider"></div>' +
+      '</div>';
+  }
+
+  function buildFilterRowInner(rowId, isNested) {
+    return '<div class="filter-select-wrapper">' +
+        '<div class="filter-select-trigger" id="trigger-' + rowId + '" onclick="toggleDropdown(\'' + rowId + '\')">' +
+          '<span class="filter-select-icon"></span>' +
+          '<span class="filter-select-label">Filter type</span>' +
+          '<span class="filter-select-arrow">' + CARET_SVG + '</span>' +
+        '</div>' +
+        '<div class="filter-dropdown" id="dropdown-' + rowId + '">' +
+          buildDropdownItems(rowId) +
+        '</div>' +
+      '</div>' +
+      '<div class="more-menu-wrapper" id="more-wrapper-' + rowId + '">' +
+        '<button class="filter-more-btn" onclick="toggleMoreMenu(\'' + rowId + '\')">' + MORE_SVG + '</button>' +
+        '<div class="more-menu" id="more-menu-' + rowId + '">' +
+          buildMoreMenu(rowId, isNested) +
+        '</div>' +
+      '</div>';
+  }
+
+  function addFilterRow() {
+    rowCounter++;
+    var rowId = 'row-' + rowCounter;
+    var connId = 'conn-' + rowCounter;
+    var container = document.getElementById('filter-rows-container');
+
+    if (container.children.length > 0) {
+      var conn = document.createElement('div');
+      conn.className = 'filter-connector';
+      conn.id = connId;
+      conn.innerHTML = buildConnector(connId);
+      container.appendChild(conn);
+    }
+
+    var row = document.createElement('div');
+    row.className = 'filter-row';
+    row.id = rowId;
+    row.innerHTML = buildFilterRowInner(rowId, false);
+    container.appendChild(row);
+    document.getElementById('filter-card').classList.add('has-rows');
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.filter-dropdown.is-open').forEach(function(dd) {
+      closeDropdown(dd.id.replace('dropdown-', ''));
+    });
+    document.querySelectorAll('.operator-dropdown.is-open').forEach(function(dd) {
+      closeOpDropdown(dd.id.replace('op-dropdown-', ''));
+    });
+    document.querySelectorAll('.picker-dropdown.is-open').forEach(function(dd) {
+      closePickerDropdown(dd.id.replace('picker-dropdown-', ''));
+    });
+    document.querySelectorAll('.src-dropdown.is-open').forEach(function(dd) {
+      closeSrcDropdown(dd.id.replace('src-dropdown-', ''));
+    });
+    document.querySelectorAll('.vf-dropdown.is-open').forEach(function(dd) {
+      closeVFDropdown(dd.id.replace('vf-dropdown-', ''));
+    });
+    document.querySelectorAll('.connector-dropdown.is-open').forEach(function(dd) {
+      closeConnectorDropdown(dd.id.replace('connector-dropdown-', ''));
+    });
+    document.querySelectorAll('.more-menu.is-open').forEach(function(m) {
+      closeMoreMenu(m.id.replace('more-menu-', ''));
+    });
+  }
+
+  function openDropdown(rowId) {
+    closeAllDropdowns();
+    var dd = document.getElementById('dropdown-' + rowId);
+    var tr = document.getElementById('trigger-' + rowId);
+    if (dd) dd.classList.add('is-open');
+    if (tr) tr.classList.add('is-open');
+  }
+  function closeDropdown(rowId) {
+    var dd = document.getElementById('dropdown-' + rowId);
+    var tr = document.getElementById('trigger-' + rowId);
+    if (dd) dd.classList.remove('is-open');
+    if (tr) tr.classList.remove('is-open');
+  }
+  function toggleDropdown(rowId) {
+    var dd = document.getElementById('dropdown-' + rowId);
+    if (dd && dd.classList.contains('is-open')) closeDropdown(rowId);
+    else openDropdown(rowId);
+  }
+
+  function openOpDropdown(rowId) {
+    closeAllDropdowns();
+    var dd = document.getElementById('op-dropdown-' + rowId);
+    var tr = document.getElementById('op-trigger-' + rowId);
+    if (dd) dd.classList.add('is-open');
+    if (tr) tr.classList.add('is-open');
+  }
+  function closeOpDropdown(rowId) {
+    var dd = document.getElementById('op-dropdown-' + rowId);
+    var tr = document.getElementById('op-trigger-' + rowId);
+    if (dd) dd.classList.remove('is-open');
+    if (tr) tr.classList.remove('is-open');
+  }
+  function toggleOpDropdown(rowId) {
+    var dd = document.getElementById('op-dropdown-' + rowId);
+    if (dd && dd.classList.contains('is-open')) closeOpDropdown(rowId);
+    else openOpDropdown(rowId);
+  }
+
+  function openPickerDropdown(rowId) {
+    closeAllDropdowns();
+    var dd = document.getElementById('picker-dropdown-' + rowId);
+    var tr = document.getElementById('picker-trigger-' + rowId);
+    if (dd) dd.classList.add('is-open');
+    if (tr) tr.classList.add('is-open');
+  }
+  function closePickerDropdown(rowId) {
+    var dd = document.getElementById('picker-dropdown-' + rowId);
+    var tr = document.getElementById('picker-trigger-' + rowId);
+    if (dd) dd.classList.remove('is-open');
+    if (tr) tr.classList.remove('is-open');
+  }
+  function togglePickerDropdown(rowId) {
+    var dd = document.getElementById('picker-dropdown-' + rowId);
+    if (dd && dd.classList.contains('is-open')) closePickerDropdown(rowId);
+    else openPickerDropdown(rowId);
+  }
+
+  function openSrcDropdown(rowId) {
+    closeAllDropdowns();
+    var dd = document.getElementById('src-dropdown-' + rowId);
+    var tr = document.getElementById('src-trigger-' + rowId);
+    if (dd) dd.classList.add('is-open');
+    if (tr) tr.classList.add('is-open');
+  }
+  function closeSrcDropdown(rowId) {
+    var dd = document.getElementById('src-dropdown-' + rowId);
+    var tr = document.getElementById('src-trigger-' + rowId);
+    if (dd) dd.classList.remove('is-open');
+    if (tr) tr.classList.remove('is-open');
+  }
+  function toggleSrcDropdown(rowId) {
+    var dd = document.getElementById('src-dropdown-' + rowId);
+    if (dd && dd.classList.contains('is-open')) closeSrcDropdown(rowId);
+    else openSrcDropdown(rowId);
+  }
+
+  function openVFDropdown(rowId) {
+    closeAllDropdowns();
+    var dd = document.getElementById('vf-dropdown-' + rowId);
+    var tr = document.getElementById('vf-trigger-' + rowId);
+    if (dd) dd.classList.add('is-open');
+    if (tr) tr.classList.add('is-open');
+  }
+  function closeVFDropdown(rowId) {
+    var dd = document.getElementById('vf-dropdown-' + rowId);
+    var tr = document.getElementById('vf-trigger-' + rowId);
+    if (dd) dd.classList.remove('is-open');
+    if (tr) tr.classList.remove('is-open');
+  }
+  function toggleVFDropdown(rowId) {
+    var dd = document.getElementById('vf-dropdown-' + rowId);
+    if (dd && dd.classList.contains('is-open')) closeVFDropdown(rowId);
+    else openVFDropdown(rowId);
+  }
+
+  function openConnectorDropdown(connId) {
+    closeAllDropdowns();
+    var dd = document.getElementById('connector-dropdown-' + connId);
+    var tr = document.getElementById('connector-trigger-' + connId);
+    if (dd) dd.classList.add('is-open');
+    if (tr) tr.classList.add('is-open');
+  }
+  function closeConnectorDropdown(connId) {
+    var dd = document.getElementById('connector-dropdown-' + connId);
+    var tr = document.getElementById('connector-trigger-' + connId);
+    if (dd) dd.classList.remove('is-open');
+    if (tr) tr.classList.remove('is-open');
+  }
+  function toggleConnectorDropdown(connId) {
+    var dd = document.getElementById('connector-dropdown-' + connId);
+    if (dd && dd.classList.contains('is-open')) closeConnectorDropdown(connId);
+    else openConnectorDropdown(connId);
+  }
+
+  function openMoreMenu(rowId) {
+    closeAllDropdowns();
+    var w = document.getElementById('more-wrapper-' + rowId);
+    if (w) w.classList.add('is-open');
+    var m = document.getElementById('more-menu-' + rowId);
+    if (m) m.classList.add('is-open');
+  }
+  function closeMoreMenu(rowId) {
+    var w = document.getElementById('more-wrapper-' + rowId);
+    if (w) w.classList.remove('is-open');
+    var m = document.getElementById('more-menu-' + rowId);
+    if (m) m.classList.remove('is-open');
+  }
+  function toggleMoreMenu(rowId) {
+    var m = document.getElementById('more-menu-' + rowId);
+    if (m && m.classList.contains('is-open')) closeMoreMenu(rowId);
+    else openMoreMenu(rowId);
+  }
+
+  function selectFilterType(event, rowId, value) {
+    event.stopPropagation();
+    var trigger = document.getElementById('trigger-' + rowId);
+    if (trigger) {
+      trigger.querySelector('.filter-select-icon').innerHTML = ICONS[value];
+      trigger.querySelector('.filter-select-label').textContent = value;
+      trigger.classList.add('has-value');
+    }
+    closeDropdown(rowId);
+
+    var row = document.getElementById(rowId);
+    ['op-wrapper-', 'val-wrapper-', 'src-wrapper-', 'extra-wrapper-'].forEach(function(prefix) {
+      var el = document.getElementById(prefix + rowId);
+      if (el) el.remove();
+    });
+
+    row.classList.add('is-expanded');
+
+    var firstOp = (OPERATORS[value] || [''])[0];
+    var opWrapper = document.createElement('div');
+    opWrapper.className = 'operator-wrapper';
+    opWrapper.id = 'op-wrapper-' + rowId;
+    opWrapper.innerHTML =
+      '<div class="operator-trigger" id="op-trigger-' + rowId + '" onclick="toggleOpDropdown(\'' + rowId + '\')">' +
+        '<span class="operator-label">' + firstOp + '</span>' +
+        '<span class="operator-arrow">' + CARET_SVG + '</span>' +
+      '</div>' +
+      '<div class="operator-dropdown" id="op-dropdown-' + rowId + '">' +
+        buildOperatorItems(rowId, value) +
+      '</div>';
+
+    var moreWrapper = row.querySelector('.more-menu-wrapper');
+
+    row.dataset.filterType = value;
+    var srcWrapper = document.createElement('div');
+    srcWrapper.className = 'src-wrapper';
+    srcWrapper.id = 'src-wrapper-' + rowId;
+    srcWrapper.style.cssText = 'position:relative; flex:0 0 167px;';
+    srcWrapper.innerHTML = buildSourceField(rowId, value);
+    row.insertBefore(opWrapper, moreWrapper);
+    row.insertBefore(srcWrapper, moreWrapper);
+  }
+
+  function selectOperator(event, rowId, itemEl) {
+    event.stopPropagation();
+    var op = itemEl.querySelector('.op-item-label').textContent;
+    var trigger = document.getElementById('op-trigger-' + rowId);
+    if (trigger) trigger.querySelector('.operator-label').textContent = op;
+    var dd = document.getElementById('op-dropdown-' + rowId);
+    if (dd) {
+      dd.querySelectorAll('.op-item').forEach(function(item) { item.classList.remove('is-selected'); });
+      itemEl.classList.add('is-selected');
+    }
+    closeOpDropdown(rowId);
+  }
+
+  function selectConnector(event, connId, itemEl) {
+    event.stopPropagation();
+    var value = itemEl.querySelector('.op-item-label').textContent;
+    var label = document.getElementById('connector-label-' + connId);
+    if (label) label.textContent = value.toUpperCase();
+    var dd = document.getElementById('connector-dropdown-' + connId);
+    if (dd) {
+      dd.querySelectorAll('.op-item').forEach(function(item) { item.classList.remove('is-selected'); });
+      itemEl.classList.add('is-selected');
+    }
+    closeConnectorDropdown(connId);
+
+    var trigger = document.getElementById('connector-trigger-' + connId);
+    var group = trigger ? trigger.closest('.filter-nested-group') : null;
+    if (group) {
+      group.querySelectorAll('.filter-connector .connector-dropdown').forEach(function(otherDd) {
+        var otherId = otherDd.id.replace('connector-dropdown-', '');
+        if (otherId === connId) return;
+        var otherLabel = document.getElementById('connector-label-' + otherId);
+        if (otherLabel) otherLabel.textContent = value.toUpperCase();
+        otherDd.querySelectorAll('.op-item').forEach(function(item) {
+          item.classList.toggle('is-selected', item.querySelector('.op-item-label').textContent.toUpperCase() === value.toUpperCase());
+        });
+      });
+    }
+  }
+
+  function selectFolder(event, rowId, name) {
+    event.stopPropagation();
+    var trigger = document.getElementById('picker-trigger-' + rowId);
+    if (trigger) {
+      trigger.querySelector('.val-lead-icon').innerHTML = ICONS.Location;
+      trigger.querySelector('.value-trigger-label').textContent = name;
+      trigger.classList.add('has-value');
+    }
+    closePickerDropdown(rowId);
+  }
+
+  function selectTag(event, rowId, name, bg, color) {
+    event.stopPropagation();
+    var trigger = document.getElementById('picker-trigger-' + rowId);
+    if (trigger) {
+      var arrowHtml = trigger.querySelector('.value-trigger-arrow').outerHTML;
+      trigger.innerHTML =
+        '<div class="tag-badge" style="background:' + bg + ';">' +
+          '<div class="tag-color-sq" style="background:' + color + ';"></div>' +
+          '<span class="tag-name">' + name + '</span>' +
+        '</div>' +
+        arrowHtml;
+    }
+    closePickerDropdown(rowId);
+  }
+
+  function selectCustomMeta(event, rowId, name, bg, border) {
+    event.stopPropagation();
+    var trigger = document.getElementById('picker-trigger-' + rowId);
+    if (trigger) {
+      trigger.querySelector('.val-lead-icon').innerHTML =
+        '<span class="tag-dot" style="background:' + bg + ';border-color:' + border + ';width:12px;height:12px;display:inline-block;border-radius:50%;border:1px solid;flex-shrink:0;"></span>';
+      trigger.querySelector('.value-trigger-label').textContent = name;
+      trigger.classList.add('has-value');
+    }
+    closePickerDropdown(rowId);
+  }
+
+  function filterPickerItems(rowId, query) {
+    var container = document.getElementById('picker-items-' + rowId);
+    if (!container) return;
+    var q = query.toLowerCase();
+    container.querySelectorAll('.folder-item, .tag-item, .tag-badge-row').forEach(function(item) {
+      var nameEl = item.querySelector('.folder-item-name, .tag-name');
+      if (nameEl) item.style.display = nameEl.textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none';
+    });
+  }
+
+  function selectSource(event, rowId, source) {
+    event.stopPropagation();
+    var label = document.getElementById('src-label-' + rowId);
+    if (label) label.textContent = source;
+    var srcTrigger = document.getElementById('src-trigger-' + rowId);
+    if (srcTrigger) srcTrigger.classList.add('has-value');
+    closeSrcDropdown(rowId);
+
+    var oldExtra = document.getElementById('extra-wrapper-' + rowId);
+    if (oldExtra) oldExtra.remove();
+
+    var row = document.getElementById(rowId);
+    var moreWrapper = row.querySelector('.more-menu-wrapper');
+
+    var extraWrapper = document.createElement('div');
+    extraWrapper.className = 'value-wrapper';
+    extraWrapper.id = 'extra-wrapper-' + rowId;
+
+    var filterType = row.dataset.filterType || '';
+    if (source === 'Enter field value') {
+      extraWrapper.style.cssText = 'flex:1; min-width:0;';
+      extraWrapper.innerHTML = '<input type="text" class="value-input" placeholder="Value">';
+    } else if (source === 'Ticket field value') {
+      extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
+      extraWrapper.innerHTML = buildVFField(rowId);
+    } else if (source === 'Folder') {
+      extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
+      extraWrapper.innerHTML = buildPickerField(rowId, 'Location');
+    } else if (source === 'Tag') {
+      extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
+      extraWrapper.innerHTML = buildPickerField(rowId, 'Tag');
+    } else if (source === 'Custom metadata value') {
+      extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
+      extraWrapper.innerHTML = buildCMPickerField(rowId);
+    }
+
+    row.insertBefore(extraWrapper, moreWrapper);
+  }
+
+  function selectPlatform(event, rowId, platformName) {
+    event.stopPropagation();
+    var platforms = document.getElementById('vf-platforms-' + rowId);
+    var fields = document.getElementById('vf-fields-' + rowId);
+    var title = document.getElementById('vf-platform-title-' + rowId);
+    if (platforms) platforms.style.display = 'none';
+    if (fields) fields.style.display = 'block';
+    if (title) title.textContent = platformName;
+  }
+
+  function showVFPlatforms(event, rowId) {
+    event.stopPropagation();
+    var platforms = document.getElementById('vf-platforms-' + rowId);
+    var fields = document.getElementById('vf-fields-' + rowId);
+    if (platforms) platforms.style.display = 'block';
+    if (fields) fields.style.display = 'none';
+  }
+
+  function selectTicketField(event, rowId, fieldName) {
+    event.stopPropagation();
+    var trigger = document.getElementById('vf-trigger-' + rowId);
+    if (trigger) {
+      trigger.querySelector('.value-trigger-label').textContent = fieldName;
+      trigger.classList.add('has-value');
+    }
+    closeVFDropdown(rowId);
+  }
+
+  function filterFieldItems(rowId, query) {
+    var container = document.getElementById('vf-field-items-' + rowId);
+    if (!container) return;
+    var q = query.toLowerCase();
+    container.querySelectorAll('.field-item').forEach(function(item) {
+      item.style.display = item.textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none';
+    });
+  }
+
+  function addNestedCondition(rowId) {
+    closeMoreMenu(rowId);
+
+    var existingRow = document.getElementById(rowId);
+    if (!existingRow) return;
+
+    groupCounter++;
+    var groupId = 'group-' + groupCounter;
+    rowCounter++;
+    var newRowId = 'row-' + rowCounter;
+    groupCounter++;
+    var connId = 'nested-conn-' + groupCounter;
+
+    var parent = existingRow.parentElement;
+    var nextSib = existingRow.nextElementSibling;
+
+    var group = document.createElement('div');
+    group.className = 'filter-nested-group';
+    group.id = groupId;
+
+    var innerConn = document.createElement('div');
+    innerConn.className = 'filter-connector';
+    innerConn.id = connId;
+    innerConn.innerHTML = buildConnector(connId, 'OR');
+
+    var newRow = document.createElement('div');
+    newRow.className = 'filter-row';
+    newRow.id = newRowId;
+    newRow.innerHTML = buildFilterRowInner(newRowId, true);
+
+    group.appendChild(existingRow);
+    group.appendChild(innerConn);
+    group.appendChild(newRow);
+
+    if (nextSib) {
+      parent.insertBefore(group, nextSib);
+    } else {
+      parent.appendChild(group);
+    }
+
+    refreshMoreMenu(rowId, true);
+  }
+
+  function addConditionToGroup(rowId) {
+    closeMoreMenu(rowId);
+
+    var row = document.getElementById(rowId);
+    var group = row ? row.closest('.filter-nested-group') : null;
+    if (!group) return;
+
+    rowCounter++;
+    var newRowId = 'row-' + rowCounter;
+    groupCounter++;
+    var connId = 'nested-conn-' + groupCounter;
+
+    var conn = document.createElement('div');
+    conn.className = 'filter-connector';
+    conn.id = connId;
+    conn.innerHTML = buildConnector(connId, 'OR');
+
+    var newRow = document.createElement('div');
+    newRow.className = 'filter-row';
+    newRow.id = newRowId;
+    newRow.innerHTML = buildFilterRowInner(newRowId, true);
+
+    group.appendChild(conn);
+    group.appendChild(newRow);
+  }
+
+  function removeNestedRow(rowId) {
+    var row = document.getElementById(rowId);
+    if (!row) return;
+
+    var group = row.closest('.filter-nested-group');
+    if (!group) return;
+
+    closeMoreMenu(rowId);
+
+    var prev = row.previousElementSibling;
+    var next = row.nextElementSibling;
+    if (prev && prev.classList.contains('filter-connector')) {
+      prev.remove();
+    } else if (next && next.classList.contains('filter-connector')) {
+      next.remove();
+    }
+    row.remove();
+
+    var remainingRows = group.querySelectorAll(':scope > .filter-row');
+    if (remainingRows.length === 1) {
+      var lastRow = remainingRows[0];
+      var groupParent = group.parentElement;
+      var groupNext = group.nextElementSibling;
+
+      if (groupNext) {
+        groupParent.insertBefore(lastRow, groupNext);
+      } else {
+        groupParent.appendChild(lastRow);
+      }
+      group.remove();
+      refreshMoreMenu(lastRow.id, false);
+    }
+  }
+
+  function deleteRow(rowId) {
+    var row = document.getElementById(rowId);
+    if (row) {
+      var prev = row.previousElementSibling;
+      var next = row.nextElementSibling;
+      if (prev && prev.classList.contains('filter-connector')) {
+        prev.remove();
+      } else if (next && next.classList.contains('filter-connector')) {
+        next.remove();
+      }
+      row.remove();
+    }
+    var container = document.getElementById('filter-rows-container');
+    if (container && container.children.length === 0) {
+      document.getElementById('filter-card').classList.remove('has-rows');
+    }
+  }
+
+  document.addEventListener('mousedown', function(event) {
+    document.querySelectorAll('.filter-dropdown.is-open').forEach(function(dd) {
+      var rowId = dd.id.replace('dropdown-', '');
+      var wrapper = dd.closest('.filter-select-wrapper');
+      if (wrapper && !wrapper.contains(event.target)) closeDropdown(rowId);
+    });
+    document.querySelectorAll('.operator-dropdown.is-open').forEach(function(dd) {
+      var rowId = dd.id.replace('op-dropdown-', '');
+      var wrapper = dd.closest('.operator-wrapper');
+      if (wrapper && !wrapper.contains(event.target)) closeOpDropdown(rowId);
+    });
+    document.querySelectorAll('.picker-dropdown.is-open').forEach(function(dd) {
+      var rowId = dd.id.replace('picker-dropdown-', '');
+      var wrapper = dd.closest('.value-wrapper');
+      if (wrapper && !wrapper.contains(event.target)) closePickerDropdown(rowId);
+    });
+    document.querySelectorAll('.src-dropdown.is-open').forEach(function(dd) {
+      var rowId = dd.id.replace('src-dropdown-', '');
+      var wrapper = dd.closest('.src-wrapper');
+      if (wrapper && !wrapper.contains(event.target)) closeSrcDropdown(rowId);
+    });
+    document.querySelectorAll('.vf-dropdown.is-open').forEach(function(dd) {
+      var rowId = dd.id.replace('vf-dropdown-', '');
+      var wrapper = dd.closest('.value-wrapper');
+      if (wrapper && !wrapper.contains(event.target)) closeVFDropdown(rowId);
+    });
+    document.querySelectorAll('.connector-dropdown.is-open').forEach(function(dd) {
+      var connId = dd.id.replace('connector-dropdown-', '');
+      var wrapper = dd.closest('.filter-connector');
+      if (wrapper && !wrapper.contains(event.target)) closeConnectorDropdown(connId);
+    });
+    document.querySelectorAll('.more-menu.is-open').forEach(function(m) {
+      var rowId = m.id.replace('more-menu-', '');
+      var wrapper = m.closest('.more-menu-wrapper');
+      if (wrapper && !wrapper.contains(event.target)) closeMoreMenu(rowId);
+    });
+  });
+
+</script>
+
+</body>
+</html>
