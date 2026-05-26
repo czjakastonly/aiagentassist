@@ -370,6 +370,14 @@
       flex-direction: column;
     }
 
+    /* Empty state: single top row with Add filter + border-bottom */
+    .filter-card-empty {
+      display: flex;
+      align-items: center;
+      padding: 24px 32px;
+      border-bottom: 1px solid #E2E2E6;
+    }
+
     .filter-card-body {
       padding: 24px 32px;
     }
@@ -455,10 +463,10 @@
     }
     .save-btn:hover { background: #c8005a; }
 
-    /* Hide empty-add when rows exist */
-    .filter-card.has-rows .filter-empty-add {
-      display: none;
-    }
+    /* Empty state: hide body+footer; filled state: hide empty row */
+    .filter-card:not(.has-rows) .filter-card-body { display: none; }
+    .filter-card:not(.has-rows) .filter-card-footer { display: none; }
+    .filter-card.has-rows .filter-card-empty { display: none; }
 
     /* Single condition row — select on left, more button pushed to right */
     .filter-row {
@@ -1429,23 +1437,21 @@
       <!-- Filter card — py-24 px-32, flex column -->
       <div class="filter-card" id="filter-card">
 
-        <div class="filter-card-body">
-
-          <!-- Empty state: shown when no rows -->
-          <div class="filter-empty-add">
-            <div class="add-filter-btn" onclick="addFilterRow()">
-              <div class="add-filter-circle">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.25 7.25V2.75C7.25 2.33579 7.58579 2 8 2C8.41421 2 8.75 2.33579 8.75 2.75V7.25H13.25C13.6642 7.25 14 7.58579 14 8C14 8.41421 13.6642 8.75 13.25 8.75H8.75V13.25C8.75 13.6642 8.41421 14 8 14C7.58579 14 7.25 13.6642 7.25 13.25V8.75H2.75C2.33579 8.75 2 8.41421 2 8C2 7.58579 2.33579 7.25 2.75 7.25H7.25Z" fill="currentColor"/>
-                </svg>
-              </div>
-              <span class="add-filter-label">Add filter</span>
+        <!-- Empty state: top row with only Add filter -->
+        <div class="filter-card-empty">
+          <div class="add-filter-btn" onclick="addFilterRow()">
+            <div class="add-filter-circle">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.25 7.25V2.75C7.25 2.33579 7.58579 2 8 2C8.41421 2 8.75 2.33579 8.75 2.75V7.25H13.25C13.6642 7.25 14 7.58579 14 8C14 8.41421 13.6642 8.75 13.25 8.75H8.75V13.25C8.75 13.6642 8.41421 14 8 14C7.58579 14 7.25 13.6642 7.25 13.25V8.75H2.75C2.33579 8.75 2 8.41421 2 8C2 7.58579 2.33579 7.25 2.75 7.25H7.25Z" fill="currentColor"/>
+              </svg>
             </div>
+            <span class="add-filter-label">Add filter</span>
           </div>
+        </div>
 
+        <div class="filter-card-body">
           <!-- Condition rows are injected here by JS -->
           <div id="filter-rows-container"></div>
-
         </div><!-- /filter-card-body -->
 
         <!-- Card footer: Add filter + Save -->
