@@ -1871,7 +1871,7 @@
     if (filterType === 'Location') {
       items = [['Folder', 'Folder'], ['Ticket field value', 'Ticket field value']];
     } else if (filterType === 'Tag') {
-      items = [['Tag', 'Tag'], ['Ticket field value', 'Ticket field value']];
+      items = [['Tag name', 'Tag name'], ['Ticket field value', 'Ticket field value']];
     } else if (filterType === 'Custom Metadata') {
       items = [['Metadata value', 'Metadata value'], ['Ticket field value', 'Ticket field value']];
     } else {
@@ -2350,7 +2350,7 @@
     } else if (source === 'Folder') {
       extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
       extraWrapper.innerHTML = buildPickerField(rowId, 'Location');
-    } else if (source === 'Tag') {
+    } else if (source === 'Tag name') {
       extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
       extraWrapper.innerHTML = buildPickerField(rowId, 'Tag');
     } else if (source === 'Metadata value') {
