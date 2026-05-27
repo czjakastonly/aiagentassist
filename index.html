@@ -502,8 +502,274 @@
       transition: left 200ms ease;
     }
 
-    .toggle.is-on .toggle-track { background: #2C9F72; }
+    .toggle.is-on .toggle-track { background: #00A37A; }
     .toggle.is-on .toggle-knob  { left: 20px; }
+
+    /* Agent sub-row — appears when toggle is ON */
+    .agent-sub-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 0;
+      border-top: 1px solid #E3E5E9;
+    }
+
+    .agent-sub-row-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .agent-sub-row-label {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #474459;
+    }
+
+    .agent-sub-row-value {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #848296;
+    }
+
+    .agent-sub-row-value.has-agent {
+      color: #26282E;
+    }
+
+    .agent-edit-btn {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #474459;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      transition: background 120ms ease, color 120ms ease;
+    }
+
+    .agent-edit-btn:hover {
+      background: #F0EFF5;
+      color: #1C1A24;
+    }
+
+    /* =====================================================
+       AGENT MODAL
+    ===================================================== */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(38, 33, 68, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-dialog {
+      background: #FFFFFF;
+      border-radius: 8px;
+      width: 600px;
+      max-width: calc(100vw - 32px);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .modal-title {
+      font-family: 'Inter', 'SF Pro Text', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 32px;
+      letter-spacing: -0.48px;
+      color: #1C1A24;
+      margin-bottom: 8px;
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #474459;
+      margin-bottom: 24px;
+    }
+
+    /* Dropdown trigger inside modal */
+    .agent-select-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .agent-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #FFFFFF;
+      transition: border-color 120ms ease;
+      user-select: none;
+    }
+
+    .agent-select-trigger:hover {
+      border-color: #848296;
+    }
+
+    .agent-select-trigger.is-open {
+      border-color: #474459;
+    }
+
+    .agent-select-label {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #848296;
+      flex: 1;
+    }
+
+    .agent-select-label.has-value {
+      color: #1C1A24;
+    }
+
+    .agent-select-caret {
+      flex-shrink: 0;
+      color: #706D84;
+    }
+
+    /* Dropdown panel */
+    .agent-dropdown-panel {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 8px rgba(0,0,0,0.08), 0px 8px 8px rgba(0,0,0,0.08);
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .agent-search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-bottom: 1px solid #E2E2E6;
+    }
+
+    .agent-search-row svg {
+      flex-shrink: 0;
+      color: #848296;
+    }
+
+    .agent-search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1C1A24;
+      background: transparent;
+    }
+
+    .agent-search-input::placeholder {
+      color: #848296;
+    }
+
+    .agent-section-label {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #706D84;
+      padding: 8px 12px 4px;
+    }
+
+    .agent-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1C1A24;
+      cursor: pointer;
+      transition: background 80ms ease;
+    }
+
+    .agent-item:hover,
+    .agent-item.is-highlighted {
+      background: #F0EFF5;
+    }
+
+    .agent-items {
+      padding-bottom: 4px;
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: #E2E2E6;
+      margin: 0 -32px;
+    }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 24px;
+    }
+
+    .modal-cancel-btn {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #474459;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 100px;
+      transition: background 120ms ease, color 120ms ease;
+    }
+
+    .modal-cancel-btn:hover {
+      background: #F0EFF5;
+    }
+
+    .modal-save-btn {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #FFFFFF;
+      background: #e61168;
+      border: none;
+      cursor: pointer;
+      padding: 8px 20px;
+      border-radius: 100px;
+      transition: background 120ms ease;
+    }
+
+    .modal-save-btn:hover {
+      background: #c8005a;
+    }
 
     /* =====================================================
        SCREEN 2 — FILTER ROWS + DROPDOWN
@@ -1510,22 +1776,22 @@
         <h1 class="content-title">General</h1>
       </div>
       <div class="settings-card">
-        <div class="settings-row">
+        <div class="settings-row" id="toggle-row-assist">
           <div class="settings-row-left">
             <span class="settings-row-label">Activation</span>
             <span class="settings-row-title">Enable AI Agent Assist</span>
           </div>
-          <div class="toggle" onclick="toggleSwitch(this)">
+          <div class="toggle" onclick="toggleSwitch(this, 'assist')">
             <div class="toggle-track"></div>
             <div class="toggle-knob"></div>
           </div>
         </div>
-        <div class="settings-row">
+        <div class="settings-row" id="toggle-row-replies">
           <div class="settings-row-left">
             <span class="settings-row-label">Activation</span>
             <span class="settings-row-title">Enable AI generated replies</span>
           </div>
-          <div class="toggle" onclick="toggleSwitch(this)">
+          <div class="toggle" onclick="toggleSwitch(this, 'replies')">
             <div class="toggle-track"></div>
             <div class="toggle-knob"></div>
           </div>
@@ -1596,9 +1862,167 @@
     document.getElementById('view-filters').style.display  = (text === 'Recommendation filters') ? '' : 'none';
   }
 
-  function toggleSwitch(el) {
+  /* Tracks saved agent names per toggle context */
+  var savedAgents = { assist: null, replies: null };
+  /* Tracks which context is currently open in the modal */
+  var activeModalContext = null;
+  /* Tracks the pending selection inside the modal (not yet saved) */
+  var pendingAgentSelection = null;
+
+  function toggleSwitch(el, context) {
     el.classList.toggle('is-on');
+    var isOn = el.classList.contains('is-on');
+
+    var subRowId = 'agent-sub-row-' + context;
+    var toggleRow = document.getElementById('toggle-row-' + context);
+
+    if (isOn) {
+      if (!document.getElementById(subRowId)) {
+        var subRow = document.createElement('div');
+        subRow.className = 'agent-sub-row';
+        subRow.id = subRowId;
+
+        var label = context === 'assist' ? 'AI agent for AI Assist' : 'Default agent for AI replies';
+        var currentValue = savedAgents[context] || 'No AI agent selected';
+        var hasAgent = savedAgents[context] ? ' has-agent' : '';
+
+        subRow.innerHTML =
+          '<div class="agent-sub-row-left">' +
+            '<span class="agent-sub-row-label">' + label + '</span>' +
+            '<span class="agent-sub-row-value' + hasAgent + '" id="agent-value-' + context + '">' + currentValue + '</span>' +
+          '</div>' +
+          '<button class="agent-edit-btn" onclick="openAgentModal(\'' + context + '\')">Edit</button>';
+
+        /* Insert right after the toggle row */
+        var next = toggleRow.nextElementSibling;
+        if (next) {
+          toggleRow.parentElement.insertBefore(subRow, next);
+        } else {
+          toggleRow.parentElement.appendChild(subRow);
+        }
+      }
+    } else {
+      var existing = document.getElementById(subRowId);
+      if (existing) existing.remove();
+    }
   }
+
+  /* ---- Agent modal ---- */
+  function openAgentModal(context) {
+    activeModalContext = context;
+    pendingAgentSelection = savedAgents[context];
+
+    var titleEl = document.getElementById('modal-title');
+    if (titleEl) {
+      titleEl.textContent = context === 'assist'
+        ? 'Select AI agent for AI Assist'
+        : 'Select default agent for AI replies';
+    }
+
+    /* Reset dropdown UI */
+    var labelEl = document.getElementById('agent-select-label');
+    var triggerEl = document.getElementById('agent-select-trigger');
+    var searchEl = document.getElementById('agent-search-input');
+    var panelEl = document.getElementById('agent-dropdown-panel');
+
+    if (pendingAgentSelection) {
+      labelEl.textContent = pendingAgentSelection;
+      labelEl.classList.add('has-value');
+    } else {
+      labelEl.textContent = 'Select AI agent';
+      labelEl.classList.remove('has-value');
+    }
+
+    if (triggerEl) triggerEl.classList.remove('is-open');
+    if (panelEl) panelEl.style.display = 'none';
+    if (searchEl) searchEl.value = '';
+    filterAgents('');
+
+    /* Highlight current selection */
+    document.querySelectorAll('.agent-item').forEach(function(item) {
+      item.classList.toggle('is-highlighted', item.textContent.trim() === pendingAgentSelection);
+    });
+
+    document.getElementById('agent-modal').style.display = 'flex';
+  }
+
+  function closeAgentModal(event) {
+    if (event) event.stopPropagation();
+    document.getElementById('agent-modal').style.display = 'none';
+    var panelEl = document.getElementById('agent-dropdown-panel');
+    if (panelEl) panelEl.style.display = 'none';
+    var triggerEl = document.getElementById('agent-select-trigger');
+    if (triggerEl) triggerEl.classList.remove('is-open');
+    activeModalContext = null;
+    pendingAgentSelection = null;
+  }
+
+  function toggleAgentDropdown() {
+    var panel = document.getElementById('agent-dropdown-panel');
+    var trigger = document.getElementById('agent-select-trigger');
+    var isOpen = panel.style.display !== 'none';
+    if (isOpen) {
+      panel.style.display = 'none';
+      trigger.classList.remove('is-open');
+    } else {
+      panel.style.display = 'block';
+      trigger.classList.add('is-open');
+      var searchEl = document.getElementById('agent-search-input');
+      if (searchEl) searchEl.focus();
+    }
+  }
+
+  function selectAgent(name) {
+    pendingAgentSelection = name;
+
+    var labelEl = document.getElementById('agent-select-label');
+    labelEl.textContent = name;
+    labelEl.classList.add('has-value');
+
+    document.querySelectorAll('.agent-item').forEach(function(item) {
+      item.classList.toggle('is-highlighted', item.textContent.trim() === name);
+    });
+
+    var panelEl = document.getElementById('agent-dropdown-panel');
+    if (panelEl) panelEl.style.display = 'none';
+    var triggerEl = document.getElementById('agent-select-trigger');
+    if (triggerEl) triggerEl.classList.remove('is-open');
+  }
+
+  function saveAgent() {
+    if (!activeModalContext || !pendingAgentSelection) {
+      closeAgentModal(null);
+      return;
+    }
+
+    savedAgents[activeModalContext] = pendingAgentSelection;
+
+    var valueEl = document.getElementById('agent-value-' + activeModalContext);
+    if (valueEl) {
+      valueEl.textContent = pendingAgentSelection;
+      valueEl.classList.add('has-agent');
+    }
+
+    closeAgentModal(null);
+  }
+
+  function filterAgents(query) {
+    var q = query.toLowerCase();
+    document.querySelectorAll('#agent-items .agent-item').forEach(function(item) {
+      item.style.display = item.textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none';
+    });
+  }
+
+  /* Close agent dropdown when clicking outside the modal trigger */
+  document.addEventListener('mousedown', function(event) {
+    var panel = document.getElementById('agent-dropdown-panel');
+    var wrapper = document.querySelector('.agent-select-wrapper');
+    if (panel && panel.style.display !== 'none' && wrapper && !wrapper.contains(event.target)) {
+      panel.style.display = 'none';
+      var trigger = document.getElementById('agent-select-trigger');
+      if (trigger) trigger.classList.remove('is-open');
+    }
+  }, true);
 
   /* ---- Filter rows ---- */
   var rowCounter = 0;
@@ -2676,6 +3100,39 @@
   });
 
 </script>
+
+<!-- ── AGENT SELECTION MODAL ── -->
+<div class="modal-overlay" id="agent-modal" style="display:none;" onclick="closeAgentModal(event)">
+  <div class="modal-dialog" onclick="event.stopPropagation()">
+    <h2 class="modal-title" id="modal-title">Select AI agent for AI Assist</h2>
+    <p class="modal-desc">Choose which AI agent will be used for this function.</p>
+    <div class="agent-select-wrapper">
+      <div class="agent-select-trigger" id="agent-select-trigger" onclick="toggleAgentDropdown()">
+        <span class="agent-select-label" id="agent-select-label">Select AI agent</span>
+        <span class="agent-select-caret">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
+        </span>
+      </div>
+      <div class="agent-dropdown-panel" id="agent-dropdown-panel" style="display:none;">
+        <div class="agent-search-row">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12C8.1133 12 9.14463 11.6408 9.98049 11.0282L12.4761 13.5238C12.7691 13.8167 13.2441 13.8167 13.5371 13.5238C13.8299 13.2307 13.8299 12.7558 13.537 12.4629L11.0413 9.96721C11.6408 9.13539 12 8.10752 12 7C12 4.23858 9.76142 2 7 2ZM3.5 7C3.5 5.067 5.067 3.5 7 3.5C8.933 3.5 10.5 5.067 10.5 7C10.5 8.933 8.933 10.5 7 10.5C5.067 10.5 3.5 8.933 3.5 7Z" fill="currentColor"/></svg>
+          <input class="agent-search-input" id="agent-search-input" type="text" placeholder="Search" oninput="filterAgents(this.value)">
+        </div>
+        <div class="agent-section-label">AI AGENT</div>
+        <div class="agent-items" id="agent-items">
+          <div class="agent-item" onclick="selectAgent('Agent-Stonly-app')">Agent-Stonly-app</div>
+          <div class="agent-item" onclick="selectAgent('Agent-Stonly-app-NEW')">Agent-Stonly-app-NEW</div>
+          <div class="agent-item" onclick="selectAgent('Agent-Stonly-DO_NOT_USE')">Agent-Stonly-DO_NOT_USE</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-footer">
+      <button class="modal-cancel-btn" onclick="closeAgentModal(event)">Cancel</button>
+      <button class="modal-save-btn" onclick="saveAgent()">Save</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
