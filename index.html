@@ -426,6 +426,86 @@
     }
 
     /* =====================================================
+       GENERAL PAGE — TOGGLE SETTINGS
+    ===================================================== */
+
+    .settings-card {
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 1px 2px rgba(0,0,0,0.24);
+      padding: 0 24px;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 24px 0;
+    }
+
+    .settings-row + .settings-row {
+      border-top: 1px solid #E3E5E9;
+    }
+
+    .settings-row-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .settings-row-label {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 14px;
+      color: #8B8E95;
+    }
+
+    .settings-row-title {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: #26282E;
+    }
+
+    /* Toggle switch */
+    .toggle {
+      width: 44px;
+      height: 24px;
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .toggle-track {
+      position: absolute;
+      top: 50%;
+      left: 1px;
+      width: 42px;
+      height: 20px;
+      border-radius: 10px;
+      background: #BFC1C6;
+      transform: translateY(-50%);
+      transition: background 200ms ease;
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0px 1px 3px rgba(0,0,0,0.3), 0px 0px 1px rgba(0,0,0,0.15);
+      transform: translateY(-50%);
+      transition: left 200ms ease;
+    }
+
+    .toggle.is-on .toggle-track { background: #2C9F72; }
+    .toggle.is-on .toggle-knob  { left: 20px; }
+
+    /* =====================================================
        SCREEN 2 — FILTER ROWS + DROPDOWN
     ===================================================== */
 
@@ -1423,7 +1503,38 @@
        flex: 1, padding: 40px, content max-width: 800px centered
   ============================================================ -->
   <main class="col-content">
-    <div class="content-inner">
+
+    <!-- ── GENERAL VIEW ── -->
+    <div class="content-inner" id="view-general" style="display:none; max-width:640px;">
+      <div class="content-header">
+        <h1 class="content-title">General</h1>
+      </div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <span class="settings-row-label">Activation</span>
+            <span class="settings-row-title">Enable AI Agent Assist</span>
+          </div>
+          <div class="toggle" onclick="toggleSwitch(this)">
+            <div class="toggle-track"></div>
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <span class="settings-row-label">Activation</span>
+            <span class="settings-row-title">Enable AI generated replies</span>
+          </div>
+          <div class="toggle" onclick="toggleSwitch(this)">
+            <div class="toggle-track"></div>
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RECOMMENDATION FILTERS VIEW ── -->
+    <div class="content-inner" id="view-filters">
 
       <!-- Header block: title + subtitle, pb 24px -->
       <div class="content-header">
@@ -1468,7 +1579,7 @@
 
       </div><!-- /filter-card -->
 
-    </div><!-- /content-inner -->
+    </div><!-- /content-inner #view-filters -->
   </main><!-- /col-content -->
 
 </div><!-- /main-layout -->
@@ -1480,6 +1591,13 @@
       item.classList.remove('is-active');
     });
     el.classList.add('is-active');
+    var text = el.textContent.trim();
+    document.getElementById('view-general').style.display  = (text === 'General') ? '' : 'none';
+    document.getElementById('view-filters').style.display  = (text === 'Recommendation filters') ? '' : 'none';
+  }
+
+  function toggleSwitch(el) {
+    el.classList.toggle('is-on');
   }
 
   /* ---- Filter rows ---- */
