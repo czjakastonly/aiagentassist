@@ -433,7 +433,7 @@
       background: #FFFFFF;
       border-radius: 4px;
       box-shadow: 0px 1px 2px rgba(0,0,0,0.24);
-      padding: 0 24px;
+      padding: 12px 24px;
     }
 
     .settings-row {
@@ -442,10 +442,12 @@
       justify-content: space-between;
       gap: 16px;
       padding: 24px 0;
+      border-bottom: 1px solid #E3E5E9;
     }
 
-    .settings-row + .settings-row {
-      border-top: 1px solid #E3E5E9;
+    /* Remove bottom border from the last row in the card */
+    .settings-card > *:last-child {
+      border-bottom: none;
     }
 
     .settings-row-left {
@@ -511,27 +513,27 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 16px 0;
-      border-top: 1px solid #E3E5E9;
+      padding: 24px 0;
+      border-bottom: 1px solid #E3E5E9;
     }
 
     .agent-sub-row-left {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
 
     .agent-sub-row-label {
       font-size: 14px;
-      font-weight: 400;
-      line-height: 20px;
-      color: #474459;
+      font-weight: 500;
+      line-height: 14px;
+      color: #8B8E95;
     }
 
     .agent-sub-row-value {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 400;
-      line-height: 20px;
+      line-height: 24px;
       color: #848296;
     }
 
@@ -542,21 +544,14 @@
     .agent-edit-btn {
       font-family: inherit;
       font-size: 14px;
-      font-weight: 500;
-      line-height: 20px;
-      color: #474459;
+      font-weight: 400;
+      line-height: 24px;
+      color: #26282E;
       background: none;
       border: none;
       cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 4px;
+      padding: 0;
       flex-shrink: 0;
-      transition: background 120ms ease, color 120ms ease;
-    }
-
-    .agent-edit-btn:hover {
-      background: #F0EFF5;
-      color: #1C1A24;
     }
 
     /* =====================================================
@@ -578,35 +573,42 @@
       border-radius: 8px;
       width: 600px;
       max-width: calc(100vw - 32px);
-      padding: 32px;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 0;
       position: relative;
+    }
+
+    .modal-top {
+      padding: 32px;
     }
 
     .modal-title {
       font-family: 'Inter', 'SF Pro Text', sans-serif;
       font-size: 24px;
-      font-weight: 600;
+      font-weight: 400;
       line-height: 32px;
       letter-spacing: -0.48px;
       color: #1C1A24;
-      margin-bottom: 8px;
+    }
+
+    .modal-body {
+      padding: 0 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .modal-desc {
       font-size: 14px;
       font-weight: 400;
-      line-height: 20px;
-      color: #474459;
-      margin-bottom: 24px;
+      line-height: 24px;
+      color: #1C1A24;
     }
 
     /* Dropdown trigger inside modal */
     .agent-select-wrapper {
       position: relative;
-      margin-bottom: 24px;
     }
 
     .agent-select-trigger {
@@ -632,15 +634,15 @@
     }
 
     .agent-select-label {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 400;
-      line-height: 20px;
+      line-height: 24px;
       color: #848296;
       flex: 1;
     }
 
     .agent-select-label.has-value {
-      color: #1C1A24;
+      color: #26282E;
     }
 
     .agent-select-caret {
@@ -724,15 +726,14 @@
     .modal-divider {
       height: 1px;
       background: #E2E2E6;
-      margin: 0 -32px;
     }
 
     .modal-footer {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 8px;
-      padding-top: 24px;
+      gap: 16px;
+      padding: 24px 32px;
     }
 
     .modal-cancel-btn {
@@ -745,8 +746,8 @@
       border: none;
       cursor: pointer;
       padding: 8px 16px;
-      border-radius: 100px;
-      transition: background 120ms ease, color 120ms ease;
+      border-radius: 4px;
+      transition: background 120ms ease;
     }
 
     .modal-cancel-btn:hover {
@@ -762,8 +763,8 @@
       background: #e61168;
       border: none;
       cursor: pointer;
-      padding: 8px 20px;
-      border-radius: 100px;
+      padding: 8px 16px;
+      border-radius: 18px;
       transition: background 120ms ease;
     }
 
@@ -1882,7 +1883,7 @@
         subRow.className = 'agent-sub-row';
         subRow.id = subRowId;
 
-        var label = context === 'assist' ? 'AI agent for AI Assist' : 'Default agent for AI replies';
+        var label = context === 'assist' ? 'AI agent for AI Assist' : 'AI agent for AI replies';
         var currentValue = savedAgents[context] || 'No AI agent selected';
         var hasAgent = savedAgents[context] ? ' has-agent' : '';
 
@@ -1916,7 +1917,14 @@
     if (titleEl) {
       titleEl.textContent = context === 'assist'
         ? 'Select AI agent for AI Assist'
-        : 'Select default agent for AI replies';
+        : 'Select AI agent for AI replies';
+    }
+
+    var descEl = document.getElementById('modal-desc');
+    if (descEl) {
+      descEl.textContent = context === 'assist'
+        ? 'Select AI agent that will be responsible for AI assist functionality including recommendation filters.'
+        : 'Select AI agent that will be responsible for generating AI replies.';
     }
 
     /* Reset dropdown UI */
@@ -3104,25 +3112,29 @@
 <!-- ── AGENT SELECTION MODAL ── -->
 <div class="modal-overlay" id="agent-modal" style="display:none;" onclick="closeAgentModal(event)">
   <div class="modal-dialog" onclick="event.stopPropagation()">
-    <h2 class="modal-title" id="modal-title">Select AI agent for AI Assist</h2>
-    <p class="modal-desc">Choose which AI agent will be used for this function.</p>
-    <div class="agent-select-wrapper">
-      <div class="agent-select-trigger" id="agent-select-trigger" onclick="toggleAgentDropdown()">
-        <span class="agent-select-label" id="agent-select-label">Select AI agent</span>
-        <span class="agent-select-caret">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
-        </span>
-      </div>
-      <div class="agent-dropdown-panel" id="agent-dropdown-panel" style="display:none;">
-        <div class="agent-search-row">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12C8.1133 12 9.14463 11.6408 9.98049 11.0282L12.4761 13.5238C12.7691 13.8167 13.2441 13.8167 13.5371 13.5238C13.8299 13.2307 13.8299 12.7558 13.537 12.4629L11.0413 9.96721C11.6408 9.13539 12 8.10752 12 7C12 4.23858 9.76142 2 7 2ZM3.5 7C3.5 5.067 5.067 3.5 7 3.5C8.933 3.5 10.5 5.067 10.5 7C10.5 8.933 8.933 10.5 7 10.5C5.067 10.5 3.5 8.933 3.5 7Z" fill="currentColor"/></svg>
-          <input class="agent-search-input" id="agent-search-input" type="text" placeholder="Search" oninput="filterAgents(this.value)">
+    <div class="modal-top">
+      <h2 class="modal-title" id="modal-title">Select AI agent for AI Assist</h2>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc" id="modal-desc">Select AI agent that will be responsible for AI assist functionality including recommendation filters.</p>
+      <div class="agent-select-wrapper">
+        <div class="agent-select-trigger" id="agent-select-trigger" onclick="toggleAgentDropdown()">
+          <span class="agent-select-label" id="agent-select-label">Select AI agent</span>
+          <span class="agent-select-caret">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
+          </span>
         </div>
-        <div class="agent-section-label">AI AGENT</div>
-        <div class="agent-items" id="agent-items">
-          <div class="agent-item" onclick="selectAgent('Agent-Stonly-app')">Agent-Stonly-app</div>
-          <div class="agent-item" onclick="selectAgent('Agent-Stonly-app-NEW')">Agent-Stonly-app-NEW</div>
-          <div class="agent-item" onclick="selectAgent('Agent-Stonly-DO_NOT_USE')">Agent-Stonly-DO_NOT_USE</div>
+        <div class="agent-dropdown-panel" id="agent-dropdown-panel" style="display:none;">
+          <div class="agent-search-row">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12C8.1133 12 9.14463 11.6408 9.98049 11.0282L12.4761 13.5238C12.7691 13.8167 13.2441 13.8167 13.5371 13.5238C13.8299 13.2307 13.8299 12.7558 13.537 12.4629L11.0413 9.96721C11.6408 9.13539 12 8.10752 12 7C12 4.23858 9.76142 2 7 2ZM3.5 7C3.5 5.067 5.067 3.5 7 3.5C8.933 3.5 10.5 5.067 10.5 7C10.5 8.933 8.933 10.5 7 10.5C5.067 10.5 3.5 8.933 3.5 7Z" fill="currentColor"/></svg>
+            <input class="agent-search-input" id="agent-search-input" type="text" placeholder="Search" oninput="filterAgents(this.value)">
+          </div>
+          <div class="agent-section-label">AI AGENT</div>
+          <div class="agent-items" id="agent-items">
+            <div class="agent-item" onclick="selectAgent('Agent-Stonly-app')">Agent-Stonly-app</div>
+            <div class="agent-item" onclick="selectAgent('Agent-Stonly-app-NEW')">Agent-Stonly-app-NEW</div>
+            <div class="agent-item" onclick="selectAgent('Agent-Stonly-DO_NOT_USE')">Agent-Stonly-DO_NOT_USE</div>
+          </div>
         </div>
       </div>
     </div>
