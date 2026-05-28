@@ -554,6 +554,22 @@
       flex-shrink: 0;
     }
 
+    /* Agent warning notification — shown when toggle is ON but no agent saved */
+    .agent-notification {
+      background: #FDF5D7;
+      border-radius: 4px;
+      padding: 16px;
+      width: 100%;
+    }
+
+    .agent-notification-text {
+      font-family: 'Inter', 'SF Pro Text', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      color: #1C1A24;
+    }
+
     /* =====================================================
        AGENT MODAL
     ===================================================== */
@@ -1875,18 +1891,38 @@
     var isOn = el.classList.contains('is-on');
 
     var subRowId = 'agent-sub-row-' + context;
+    var notifId = 'agent-notification-' + context;
     var toggleRow = document.getElementById('toggle-row-' + context);
 
     if (isOn) {
       if (!document.getElementById(subRowId)) {
-        var subRow = document.createElement('div');
-        subRow.className = 'agent-sub-row';
-        subRow.id = subRowId;
-
         var label = context === 'assist' ? 'AI agent for AI Assist' : 'AI agent for AI replies';
         var currentValue = savedAgents[context] || 'No AI agent selected';
         var hasAgent = savedAgents[context] ? ' has-agent' : '';
 
+        /* Insert notification right after toggle row if no agent is saved yet */
+        var insertAnchor = toggleRow;
+        if (!savedAgents[context]) {
+          var notifText = context === 'assist'
+            ? "AI Assist won't work until an agent is selected."
+            : "AI generated replies won't work until an agent is selected.";
+          var notif = document.createElement('div');
+          notif.className = 'agent-notification';
+          notif.id = notifId;
+          notif.innerHTML = '<p class="agent-notification-text">' + notifText + '</p>';
+          var nextEl = toggleRow.nextElementSibling;
+          if (nextEl) {
+            toggleRow.parentElement.insertBefore(notif, nextEl);
+          } else {
+            toggleRow.parentElement.appendChild(notif);
+          }
+          insertAnchor = notif;
+        }
+
+        /* Insert sub-row after the notification (or toggle row if no notification) */
+        var subRow = document.createElement('div');
+        subRow.className = 'agent-sub-row';
+        subRow.id = subRowId;
         subRow.innerHTML =
           '<div class="agent-sub-row-left">' +
             '<span class="agent-sub-row-label">' + label + '</span>' +
@@ -1894,15 +1930,16 @@
           '</div>' +
           '<button class="agent-edit-btn" onclick="openAgentModal(\'' + context + '\')">Edit</button>';
 
-        /* Insert right after the toggle row */
-        var next = toggleRow.nextElementSibling;
-        if (next) {
-          toggleRow.parentElement.insertBefore(subRow, next);
+        var nextEl2 = insertAnchor.nextElementSibling;
+        if (nextEl2) {
+          insertAnchor.parentElement.insertBefore(subRow, nextEl2);
         } else {
-          toggleRow.parentElement.appendChild(subRow);
+          insertAnchor.parentElement.appendChild(subRow);
         }
       }
     } else {
+      var existingNotif = document.getElementById(notifId);
+      if (existingNotif) existingNotif.remove();
       var existing = document.getElementById(subRowId);
       if (existing) existing.remove();
     }
@@ -2010,6 +2047,10 @@
       valueEl.textContent = pendingAgentSelection;
       valueEl.classList.add('has-agent');
     }
+
+    /* Remove warning notification once an agent is saved */
+    var notif = document.getElementById('agent-notification-' + activeModalContext);
+    if (notif) notif.remove();
 
     closeAgentModal(null);
   }
