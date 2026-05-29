@@ -698,30 +698,49 @@
 
     .rules-search-input::placeholder { color: #706D84; }
 
-    .rules-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: auto;
+    /* Flex-based table rows */
+    .rules-table-wrap {
+      padding: 0 16px;
     }
 
-    .rules-table th {
+    .rt-row {
+      display: flex;
+      align-items: stretch;
+      padding: 0 16px;
+    }
+
+    .rt-header { height: 56px; }
+
+    .rt-data-row {
+      border-top: 1px solid #E2E2E6;
+      border-radius: 4px;
+      height: 64px;
+    }
+
+    .rt-data-row:hover { background: #F7F7F9; }
+
+    .rt-cell {
+      display: flex;
+      align-items: center;
+      padding: 20px 16px;
+      flex-shrink: 0;
+    }
+
+    .rt-col-name  { width: 200px; }
+    .rt-col-desc  { flex: 1; min-width: 0; }
+    .rt-col-used  { width: 95px; }
+    .rt-col-actions { width: 48px; justify-content: center; }
+
+    .rt-th {
       font-size: 12px;
       font-weight: 500;
       line-height: 16px;
       text-transform: uppercase;
       color: #706D84;
-      padding: 20px 16px;
-      text-align: left;
       white-space: nowrap;
     }
 
-    .rules-table td {
-      padding: 20px 16px;
-      border-top: 1px solid #E2E2E6;
-      vertical-align: middle;
-    }
-
-    .rules-table td.col-name {
+    .rt-name-text {
       font-size: 14px;
       font-weight: 500;
       line-height: 20px;
@@ -729,15 +748,17 @@
       white-space: nowrap;
     }
 
-    .rules-table td.col-desc {
+    .rt-desc-text {
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
       color: #706D84;
-      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .rules-table td.col-used {
+    .rt-used-text {
       font-size: 14px;
       font-weight: 400;
       line-height: 24px;
@@ -745,14 +766,7 @@
       white-space: nowrap;
     }
 
-    .rules-table td.col-actions {
-      width: 48px;
-      text-align: center;
-    }
-
-    .rules-table tbody tr:hover td { background: #F8F8F9; }
-
-    .rule-more-btn {
+    .rt-more-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -763,10 +777,12 @@
       cursor: pointer;
       color: #706D84;
       padding: 0;
+      visibility: hidden;
       transition: color 120ms ease;
     }
 
-    .rule-more-btn:hover { color: #1C1A24; }
+    .rt-data-row:hover .rt-more-btn { visibility: visible; }
+    .rt-more-btn:hover { color: #1C1A24; }
 
     /* =====================================================
        AGENT MODAL
@@ -2097,43 +2113,49 @@
             </div>
           </div>
         </div>
-        <!-- Table -->
-        <table class="rules-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Used in</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="col-name">reply_formatting</td>
-              <td class="col-desc">Controls the structure and length of all agent replies</td>
-              <td class="col-used">Summary</td>
-              <td class="col-actions"><button class="rule-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button></td>
-            </tr>
-            <tr>
-              <td class="col-name">escalation_policy</td>
-              <td class="col-desc">Defines when and how to escalate a ticket to tier-2 support</td>
-              <td class="col-used">All</td>
-              <td class="col-actions"><button class="rule-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button></td>
-            </tr>
-            <tr>
-              <td class="col-name">tone_voice</td>
-              <td class="col-desc">Sets the tone and language style for all customer-facing responses</td>
-              <td class="col-used">All</td>
-              <td class="col-actions"><button class="rule-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button></td>
-            </tr>
-            <tr>
-              <td class="col-name">knowledge_gap_handling</td>
-              <td class="col-desc">Defines how the AI should respond when it cannot find a relevant guide</td>
-              <td class="col-used">Search</td>
-              <td class="col-actions"><button class="rule-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button></td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- Table (flex-based, matches Figma) -->
+        <div class="rules-table-wrap">
+          <!-- Header row -->
+          <div class="rt-row rt-header">
+            <div class="rt-cell rt-col-name"><span class="rt-th">NAME</span></div>
+            <div class="rt-cell rt-col-desc"><span class="rt-th">DESCRIPTION</span></div>
+            <div class="rt-cell rt-col-used"><span class="rt-th">USED IN</span></div>
+            <div class="rt-cell rt-col-actions"></div>
+          </div>
+          <!-- Data rows -->
+          <div class="rt-row rt-data-row">
+            <div class="rt-cell rt-col-name"><span class="rt-name-text">reply_formatting</span></div>
+            <div class="rt-cell rt-col-desc"><span class="rt-desc-text">Controls the structure and length of all agent replies</span></div>
+            <div class="rt-cell rt-col-used"><span class="rt-used-text">Summary</span></div>
+            <div class="rt-cell rt-col-actions">
+              <button class="rt-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button>
+            </div>
+          </div>
+          <div class="rt-row rt-data-row">
+            <div class="rt-cell rt-col-name"><span class="rt-name-text">escalation_policy</span></div>
+            <div class="rt-cell rt-col-desc"><span class="rt-desc-text">Defines when and how to escalate a ticket to tier-2 support</span></div>
+            <div class="rt-cell rt-col-used"><span class="rt-used-text">All</span></div>
+            <div class="rt-cell rt-col-actions">
+              <button class="rt-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button>
+            </div>
+          </div>
+          <div class="rt-row rt-data-row">
+            <div class="rt-cell rt-col-name"><span class="rt-name-text">tone_voice</span></div>
+            <div class="rt-cell rt-col-desc"><span class="rt-desc-text">Sets the tone and language style for all customer-facing responses</span></div>
+            <div class="rt-cell rt-col-used"><span class="rt-used-text">All</span></div>
+            <div class="rt-cell rt-col-actions">
+              <button class="rt-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button>
+            </div>
+          </div>
+          <div class="rt-row rt-data-row">
+            <div class="rt-cell rt-col-name"><span class="rt-name-text">knowledge_gap_handling</span></div>
+            <div class="rt-cell rt-col-desc"><span class="rt-desc-text">Defines how the AI should respond when it cannot find a relevant guide</span></div>
+            <div class="rt-cell rt-col-used"><span class="rt-used-text">Search</span></div>
+            <div class="rt-cell rt-col-actions">
+              <button class="rt-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button>
+            </div>
+          </div>
+        </div>
       </div>
     </div><!-- /content-inner #view-rules -->
 
