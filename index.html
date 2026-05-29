@@ -282,21 +282,20 @@
       overflow: hidden;
     }
 
-    /* Section heading: 11px/600, uppercase, letter-spacing 0.08em */
+    /* Section heading: 12px/500, uppercase */
     .settings-section-label {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       line-height: 16px;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #8B8E95; /* text-light-grey */
+      color: #8B8E95;
       padding-left: 16px;
     }
 
     .settings-nav-items {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 4px;
       margin-top: 12px;
       padding: 0 8px;
     }
@@ -569,6 +568,205 @@
       line-height: 24px;
       color: #1C1A24;
     }
+
+    /* =====================================================
+       RULES VIEW — TABLE
+    ===================================================== */
+
+    .rules-box {
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 2px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.08);
+      padding-bottom: 8px;
+    }
+
+    .rules-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 24px 22px 20px;
+      border-bottom: 1px solid #E2E2E6;
+    }
+
+    .add-rule-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    .add-rule-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      border: 1px solid #D3D5DA;
+      background: #FFFFFF;
+      color: #5D6169;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .add-rule-label {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 14px;
+      color: #5D6169;
+    }
+
+    .rules-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .rules-pagination {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .pagination-count {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #474459;
+      white-space: nowrap;
+    }
+
+    .pagination-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      border: 1px solid #E2E2E6;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #848296;
+      padding: 0;
+      flex-shrink: 0;
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+
+    .page-btn:hover {
+      border-color: #C1C0CB;
+      background: #F8F8F9;
+    }
+
+    .rules-search {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 40px;
+      padding: 8px 12px;
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      background: #FFFFFF;
+      width: 218px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .rules-search svg { flex-shrink: 0; color: #706D84; }
+
+    .rules-search-input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1C1A24;
+      background: transparent;
+    }
+
+    .rules-search-input::placeholder { color: #706D84; }
+
+    .rules-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+
+    .rules-table th {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      text-transform: uppercase;
+      color: #706D84;
+      padding: 20px 16px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .rules-table td {
+      padding: 20px 16px;
+      border-top: 1px solid #E2E2E6;
+      vertical-align: middle;
+    }
+
+    .rules-table td.col-name {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #1C1A24;
+      white-space: nowrap;
+    }
+
+    .rules-table td.col-desc {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #706D84;
+      width: 100%;
+    }
+
+    .rules-table td.col-used {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      color: #474459;
+      white-space: nowrap;
+    }
+
+    .rules-table td.col-actions {
+      width: 48px;
+      text-align: center;
+    }
+
+    .rules-table tbody tr:hover td { background: #F8F8F9; }
+
+    .rule-more-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #706D84;
+      padding: 0;
+      transition: color 120ms ease;
+    }
+
+    .rule-more-btn:hover { color: #1C1A24; }
 
     /* =====================================================
        AGENT MODAL
@@ -1773,11 +1971,11 @@
     <!-- Section label: 11px / 600 / uppercase / ls 0.08em / text-light-grey -->
     <p class="settings-section-label">Agent Assist Settings</p>
 
-    <!-- List Item — Basic component, three items -->
     <div class="settings-nav-items">
       <div class="settings-nav-item" onclick="setActive(this)">General</div>
       <div class="settings-nav-item is-active" onclick="setActive(this)">Recommendation filters</div>
-      <div class="settings-nav-item" onclick="setActive(this)">Tools &amp; Rules</div>
+      <div class="settings-nav-item" onclick="setActive(this)">Rules</div>
+      <div class="settings-nav-item" onclick="setActive(this)">Tools</div>
     </div>
   </aside><!-- /col-settings-nav -->
 
@@ -1863,6 +2061,90 @@
       </div><!-- /filter-card -->
 
     </div><!-- /content-inner #view-filters -->
+
+    <!-- ── RULES VIEW ── -->
+    <div class="content-inner" id="view-rules" style="display:none; max-width:none;">
+      <div class="content-header">
+        <h1 class="content-title">Rules</h1>
+        <p class="content-subtitle">Create rules to control how the AI behaves when helping agents.</p>
+      </div>
+      <div class="rules-box">
+        <!-- Top bar -->
+        <div class="rules-topbar">
+          <div class="rules-topbar-left">
+            <button class="add-rule-btn">
+              <div class="add-rule-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.5C7.44772 1.5 7 1.94772 7 2.5V7H2.5C1.94772 7 1.5 7.44772 1.5 8C1.5 8.55228 1.94772 9 2.5 9H7V13.5C7 14.0523 7.44772 14.5 8 14.5C8.55228 14.5 9 14.0523 9 13.5V9H13.5C14.0523 9 14.5 8.55228 14.5 8C14.5 7.44772 14.0523 7 13.5 7H9V2.5C9 1.94772 8.55228 1.5 8 1.5Z" fill="currentColor"/></svg>
+              </div>
+              <span class="add-rule-label">Add rule</span>
+            </button>
+          </div>
+          <div class="rules-topbar-right">
+            <div class="rules-pagination">
+              <span class="pagination-count">1 of 1</span>
+              <div class="pagination-nav">
+                <button class="page-btn" title="Previous">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="page-btn" title="Next">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="rules-search">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12C8.1133 12 9.14463 11.6408 9.98049 11.0282L12.4761 13.5238C12.7691 13.8167 13.2441 13.8167 13.5371 13.5238C13.8299 13.2307 13.8299 12.7558 13.537 12.4629L11.0413 9.96721C11.6408 9.13539 12 8.10752 12 7C12 4.23858 9.76142 2 7 2ZM3.5 7C3.5 5.067 5.067 3.5 7 3.5C8.933 3.5 10.5 5.067 10.5 7C10.5 8.933 8.933 10.5 7 10.5C5.067 10.5 3.5 8.933 3.5 7Z" fill="currentColor"/></svg>
+              <input class="rules-search-input" type="text" placeholder="Search">
+            </div>
+          </div>
+        </div>
+        <!-- Table -->
+        <table class="rules-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Used in</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-name">reply_formatting</td>
+              <td class="col-desc">Controls the structure and length of all agent replies</td>
+              <td class="col-used">Summary</td>
+              <td class="col-actions"><button class="rule-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button></td>
+            </tr>
+            <tr>
+              <td class="col-name">escalation_policy</td>
+              <td class="col-desc">Defines when and how to escalate a ticket to tier-2 support</td>
+              <td class="col-used">All</td>
+              <td class="col-actions"><button class="rule-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button></td>
+            </tr>
+            <tr>
+              <td class="col-name">tone_voice</td>
+              <td class="col-desc">Sets the tone and language style for all customer-facing responses</td>
+              <td class="col-used">All</td>
+              <td class="col-actions"><button class="rule-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button></td>
+            </tr>
+            <tr>
+              <td class="col-name">knowledge_gap_handling</td>
+              <td class="col-desc">Defines how the AI should respond when it cannot find a relevant guide</td>
+              <td class="col-used">Search</td>
+              <td class="col-actions"><button class="rule-more-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /content-inner #view-rules -->
+
+    <!-- ── TOOLS VIEW ── -->
+    <div class="content-inner" id="view-tools" style="display:none; max-width:640px;">
+      <div class="content-header">
+        <h1 class="content-title">Tools</h1>
+        <p class="content-subtitle">Configure the tools available to your AI agent.</p>
+      </div>
+    </div><!-- /content-inner #view-tools -->
+
   </main><!-- /col-content -->
 
 </div><!-- /main-layout -->
@@ -1877,6 +2159,8 @@
     var text = el.textContent.trim();
     document.getElementById('view-general').style.display  = (text === 'General') ? '' : 'none';
     document.getElementById('view-filters').style.display  = (text === 'Recommendation filters') ? '' : 'none';
+    document.getElementById('view-rules').style.display    = (text === 'Rules') ? '' : 'none';
+    document.getElementById('view-tools').style.display    = (text === 'Tools') ? '' : 'none';
   }
 
   /* Tracks saved agent names per toggle context */
