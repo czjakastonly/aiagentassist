@@ -380,6 +380,9 @@
     .filter-card-body {
       padding: 24px 32px;
     }
+    .filter-card.has-rows .filter-card-body {
+      padding-top: 12px;
+    }
 
     /* Add filter button: flex row, align center, gap 16px */
     .add-filter-btn {
@@ -1043,6 +1046,34 @@
     .filter-card:not(.has-rows) .filter-card-body { display: none; }
     .filter-card:not(.has-rows) .filter-card-footer { display: none; }
     .filter-card.has-rows .filter-card-empty { display: none; }
+    .filter-card:not(.has-rows) .filter-card-header { display: none; }
+
+    /* Column header row — sticky, only visible in has-rows state */
+    .filter-card-header {
+      position: sticky;
+      top: 0;
+      background: #FFFFFF;
+      z-index: 2;
+      padding: 24px 32px 0;
+    }
+    .filter-card-header-row {
+      display: flex;
+      align-items: center;
+      height: 16px;
+    }
+    .filter-card-th {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      text-transform: uppercase;
+      color: #706D84;
+      flex-shrink: 0;
+    }
+    .filter-card-th-type { width: 180px; }
+    .filter-card-th-condition { width: 150px; }
+    .filter-card-th-source { width: 169px; }
+    .filter-card-th-value { width: 169px; }
+    .filter-card-th-action { width: 36px; opacity: 0; }
 
     /* Single condition row — select on left, more button pushed to right */
     .filter-row {
@@ -2056,6 +2087,17 @@
           </div>
         </div>
 
+        <!-- Column headers — only shown in has-rows state, sticky -->
+        <div class="filter-card-header">
+          <div class="filter-card-header-row">
+            <span class="filter-card-th filter-card-th-type">Filter type</span>
+            <span class="filter-card-th filter-card-th-condition">Condition</span>
+            <span class="filter-card-th filter-card-th-source">Source</span>
+            <span class="filter-card-th filter-card-th-value">Value</span>
+            <span class="filter-card-th filter-card-th-action"></span>
+          </div>
+        </div>
+
         <div class="filter-card-body">
           <!-- Condition rows are injected here by JS -->
           <div id="filter-rows-container"></div>
@@ -2766,7 +2808,7 @@
   function buildSourceField(rowId, filterType) {
     var items;
     if (filterType === 'Location') {
-      items = [['Folder', 'Folder'], ['Ticket field value', 'Ticket field value']];
+      items = [['Folder name', 'Folder name'], ['Ticket field value', 'Ticket field value']];
     } else if (filterType === 'Tag') {
       items = [['Tag name', 'Tag name'], ['Ticket field value', 'Ticket field value']];
     } else if (filterType === 'Custom Metadata') {
@@ -3244,7 +3286,7 @@
     } else if (source === 'Ticket field value') {
       extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
       extraWrapper.innerHTML = buildVFField(rowId);
-    } else if (source === 'Folder') {
+    } else if (source === 'Folder name') {
       extraWrapper.style.cssText = 'flex:1; min-width:0; position:relative;';
       extraWrapper.innerHTML = buildPickerField(rowId, 'Location');
     } else if (source === 'Tag name') {
