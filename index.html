@@ -1059,6 +1059,7 @@
     .filter-card-header-row {
       display: flex;
       align-items: center;
+      gap: 8px;
       height: 16px;
     }
     .filter-card-th {
@@ -1069,17 +1070,17 @@
       color: #706D84;
       flex-shrink: 0;
     }
-    .filter-card-th-type { width: 180px; }
-    .filter-card-th-condition { width: 150px; }
-    .filter-card-th-source { width: 169px; }
-    .filter-card-th-value { width: 169px; }
-    .filter-card-th-action { width: 36px; opacity: 0; }
+    .filter-card-th-type { width: 180px; flex-shrink: 0; }
+    .filter-card-th-condition { width: 150px; flex-shrink: 0; }
+    .filter-card-th-source { flex: 1; min-width: 0; }
+    .filter-card-th-value { flex: 1; min-width: 0; }
+    .filter-card-th-action { width: 36px; flex-shrink: 0; opacity: 0; }
 
     /* Single condition row — select on left, more button pushed to right */
     .filter-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       border-radius: 4px;
       padding: 8px;
       margin: 0 -8px;
