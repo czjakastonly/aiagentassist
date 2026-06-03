@@ -990,15 +990,18 @@
 
     #rules-table { display: none; }
 
+    /* Header: 56px tall, cells have 16px horizontal padding each */
     .rules-table-header {
       display: flex;
-      align-items: center;
-      height: 40px;
-      padding: 0 24px;
+      align-items: stretch;
+      height: 56px;
+      padding: 0 16px;
       border-bottom: 1px solid #E2E2E6;
     }
 
     .rules-th {
+      display: flex;
+      align-items: center;
       font-size: 12px;
       font-weight: 500;
       line-height: 16px;
@@ -1006,27 +1009,30 @@
       letter-spacing: 0.5px;
       color: #706D84;
       flex-shrink: 0;
+      padding: 0 16px;
     }
-    .rules-th-name { width: 200px; }
-    .rules-th-desc { flex: 1; min-width: 0; }
+    .rules-th-name  { width: 200px; }
+    .rules-th-desc  { flex: 1; min-width: 0; }
     .rules-th-tools { width: 143px; }
-    .rules-th-status { width: 80px; }
+    .rules-th-status { width: 68px; }
     .rules-th-action { width: 60px; }
 
+    /* Row: 64px, outer 16px gutter to mirror header, no borders between rows */
     .rules-table-row {
       display: flex;
       align-items: center;
       height: 64px;
-      padding: 0 24px;
-      border-bottom: 1px solid #E2E2E6;
+      padding: 0 16px;
+      border-radius: 4px;
       transition: background 80ms ease;
     }
-    .rules-table-row:last-child { border-bottom: none; }
     .rules-table-row:hover { background: #F7F7F9; }
 
+    /* Each cell mirrors its header column width + 16px padding on each side */
     .rules-td-name {
       width: 200px;
       flex-shrink: 0;
+      padding: 0 16px;
       font-size: 14px;
       font-weight: 500;
       line-height: 20px;
@@ -1034,12 +1040,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      padding-right: 12px;
     }
 
     .rules-td-desc {
       flex: 1;
       min-width: 0;
+      padding: 0 16px;
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
@@ -1047,12 +1053,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      padding-right: 12px;
     }
 
     .rules-td-tools {
       width: 143px;
       flex-shrink: 0;
+      padding: 0 16px;
       font-size: 14px;
       font-weight: 400;
       line-height: 24px;
@@ -1060,31 +1066,34 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      padding-right: 12px;
     }
 
     .rules-td-status {
-      width: 80px;
-      flex-shrink: 0;
+      flex: 1;
+      min-width: 0;
+      padding: 0 16px;
       display: flex;
       align-items: center;
     }
 
     .rules-status-badge {
-      padding: 3px 6px;
+      padding: 4px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: 500;
-      line-height: 14px;
+      line-height: 16px;
       color: #FFFFFF;
       white-space: nowrap;
+      min-width: 26px;
+      text-align: center;
     }
-    .rules-status-badge.is-on { background: #2C9F72; }
+    .rules-status-badge.is-on  { background: #2C9F72; }
     .rules-status-badge.is-off { background: #848296; }
 
     .rules-td-action {
       width: 60px;
       flex-shrink: 0;
+      padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: center;
