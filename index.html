@@ -720,6 +720,394 @@
     }
 
     /* =====================================================
+       RULE MODAL
+    ===================================================== */
+
+    .rule-modal-dialog {
+      background: #FFFFFF;
+      border-radius: 8px;
+      width: 640px;
+      max-width: calc(100vw - 32px);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      max-height: calc(100vh - 64px);
+    }
+
+    .rule-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 32px 32px 0;
+      flex-shrink: 0;
+    }
+
+    .rule-modal-title {
+      font-family: 'Inter', 'SF Pro Text', sans-serif;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 32px;
+      letter-spacing: -0.48px;
+      color: #1C1A24;
+    }
+
+    .rule-modal-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: #F0EFF5;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #474459;
+      flex-shrink: 0;
+      transition: background 120ms ease;
+    }
+    .rule-modal-close-btn:hover { background: #E2E2E6; }
+
+    .rule-modal-body {
+      padding: 24px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    .rule-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rule-field-label {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      color: #706D84;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .rule-field-input {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1C1A24;
+      background: #FFFFFF;
+      outline: none;
+      transition: border-color 120ms ease;
+    }
+    .rule-field-input:focus { border-color: #474459; }
+    .rule-field-input::placeholder { color: #848296; }
+
+    .rule-field-helper {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #706D84;
+    }
+
+    .rule-instructions-wrapper {
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      overflow: hidden;
+      transition: border-color 120ms ease;
+    }
+    .rule-instructions-wrapper:focus-within { border-color: #474459; }
+
+    .rule-instructions-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 16px;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1C1A24;
+      background: #FFFFFF;
+      resize: vertical;
+      display: block;
+    }
+    .rule-instructions-textarea::placeholder { color: #848296; }
+
+    .rule-toolbar {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      border-top: 1px solid #E2E2E6;
+      padding: 0 12px;
+      gap: 2px;
+    }
+
+    .rule-toolbar-btn {
+      min-width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #706D84;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 0 4px;
+      transition: background 80ms ease;
+      flex-shrink: 0;
+    }
+    .rule-toolbar-btn:hover { background: #F0EFF5; }
+
+    .rule-toolbar-sep {
+      width: 1px;
+      height: 16px;
+      background: #E2E2E6;
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .rule-toolbar-counter {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      color: #217e5a;
+      white-space: nowrap;
+    }
+
+    .rule-checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rule-checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #C1C0CB;
+      border-radius: 3px;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background: #FFFFFF;
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+    .rule-checkbox:checked {
+      background: #e61168;
+      border-color: #e61168;
+    }
+    .rule-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 1px;
+      width: 8px;
+      height: 5px;
+      border-left: 1.5px solid white;
+      border-bottom: 1.5px solid white;
+      transform: rotate(-45deg);
+    }
+
+    .rule-checkbox-label {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #474459;
+      cursor: pointer;
+    }
+
+    .rule-tool-wrapper { position: relative; }
+
+    .rule-tool-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #C1C0CB;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #FFFFFF;
+      transition: border-color 120ms ease;
+      user-select: none;
+    }
+    .rule-tool-trigger:hover { border-color: #848296; }
+    .rule-tool-trigger.is-open { border-color: #474459; }
+
+    .rule-tool-label {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      color: #848296;
+      flex: 1;
+    }
+    .rule-tool-label.has-value { color: #1C1A24; }
+
+    .rule-tool-caret { flex-shrink: 0; color: #706D84; }
+
+    .rule-tool-panel {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 8px rgba(0,0,0,0.08), 0px 8px 8px rgba(0,0,0,0.08);
+      z-index: 20;
+      overflow: hidden;
+      padding: 4px 0;
+    }
+
+    .rule-tool-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1C1A24;
+      cursor: pointer;
+      transition: background 80ms ease;
+    }
+    .rule-tool-item:hover { background: #F0EFF5; }
+
+    /* =====================================================
+       RULES TABLE
+    ===================================================== */
+
+    #rules-table { display: none; }
+
+    .rules-table-header {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 24px;
+      border-bottom: 1px solid #E2E2E6;
+    }
+
+    .rules-th {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #706D84;
+      flex-shrink: 0;
+    }
+    .rules-th-name { width: 200px; }
+    .rules-th-desc { flex: 1; min-width: 0; }
+    .rules-th-tools { width: 143px; }
+    .rules-th-status { width: 80px; }
+    .rules-th-action { width: 60px; }
+
+    .rules-table-row {
+      display: flex;
+      align-items: center;
+      height: 64px;
+      padding: 0 24px;
+      border-bottom: 1px solid #E2E2E6;
+      transition: background 80ms ease;
+    }
+    .rules-table-row:last-child { border-bottom: none; }
+    .rules-table-row:hover { background: #F7F7F9; }
+
+    .rules-td-name {
+      width: 200px;
+      flex-shrink: 0;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #1C1A24;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 12px;
+    }
+
+    .rules-td-desc {
+      flex: 1;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #706D84;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 12px;
+    }
+
+    .rules-td-tools {
+      width: 143px;
+      flex-shrink: 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      color: #474459;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 12px;
+    }
+
+    .rules-td-status {
+      width: 80px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .rules-status-badge {
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 14px;
+      color: #FFFFFF;
+      white-space: nowrap;
+    }
+    .rules-status-badge.is-on { background: #2C9F72; }
+    .rules-status-badge.is-off { background: #848296; }
+
+    .rules-td-action {
+      width: 60px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rules-action-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #706D84;
+      visibility: hidden;
+      transition: background 80ms ease;
+    }
+    .rules-table-row:hover .rules-action-btn { visibility: visible; }
+    .rules-action-btn:hover { background: #F0EFF5; }
+
+    /* =====================================================
        AGENT MODAL
     ===================================================== */
 
@@ -2063,7 +2451,7 @@
         <!-- Top bar -->
         <div class="rules-topbar">
           <div class="rules-topbar-left">
-            <button class="add-rule-btn">
+            <button class="add-rule-btn" onclick="openRuleModal()">
               <div class="add-rule-icon">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.5C7.44772 1.5 7 1.94772 7 2.5V7H2.5C1.94772 7 1.5 7.44772 1.5 8C1.5 8.55228 1.94772 9 2.5 9H7V13.5C7 14.0523 7.44772 14.5 8 14.5C8.55228 14.5 9 14.0523 9 13.5V9H13.5C14.0523 9 14.5 8.55228 14.5 8C14.5 7.44772 14.0523 7 13.5 7H9V2.5C9 1.94772 8.55228 1.5 8 1.5Z" fill="currentColor"/></svg>
               </div>
@@ -2089,7 +2477,7 @@
           </div>
         </div>
         <!-- Empty state -->
-        <div class="rules-empty-state">
+        <div class="rules-empty-state" id="rules-empty-state">
           <svg width="72" height="57" viewBox="0 0 72 57" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- sparkle top right -->
             <path d="M63.5 1L64.9 5.6L69.5 7L64.9 8.4L63.5 13L62.1 8.4L57.5 7L62.1 5.6L63.5 1Z" fill="#D3D5DA"/>
@@ -2108,6 +2496,17 @@
             <rect x="24" y="46" width="16" height="2" rx="1" fill="#E2E2E6"/>
           </svg>
           <p class="rules-empty-text">No rules added</p>
+        </div>
+        <!-- Rules table (shown when rows exist) -->
+        <div id="rules-table">
+          <div class="rules-table-header">
+            <div class="rules-th rules-th-name">Name</div>
+            <div class="rules-th rules-th-desc">Description</div>
+            <div class="rules-th rules-th-tools">Used in tools</div>
+            <div class="rules-th rules-th-status">Status</div>
+            <div class="rules-th rules-th-action"></div>
+          </div>
+          <div class="rules-table-body" id="rules-tbody"></div>
         </div>
       </div>
     </div><!-- /content-inner #view-rules -->
@@ -3405,9 +3804,197 @@
       var wrapper = m.closest('.more-menu-wrapper');
       if (wrapper && !wrapper.contains(event.target)) closeMoreMenu(rowId);
     });
+    /* Close rule tool dropdown when clicking outside */
+    var rulePanel = document.getElementById('rule-tool-panel');
+    var ruleWrapper = document.getElementById('rule-tool-wrapper');
+    if (rulePanel && rulePanel.style.display !== 'none' && ruleWrapper && !ruleWrapper.contains(event.target)) {
+      rulePanel.style.display = 'none';
+      var rt = document.getElementById('rule-tool-trigger');
+      if (rt) rt.classList.remove('is-open');
+    }
   });
 
+  /* ---- Rule modal ---- */
+  var ruleToolSelection = null;
+
+  function openRuleModal() {
+    document.getElementById('rule-name-input').value = '';
+    document.getElementById('rule-desc-input').value = '';
+    document.getElementById('rule-instructions-input').value = '';
+    document.getElementById('rule-assign-all-checkbox').checked = false;
+    document.getElementById('rule-char-counter').textContent = '0/1600';
+    ruleToolSelection = null;
+    var lbl = document.getElementById('rule-tool-label');
+    lbl.textContent = 'Select tool';
+    lbl.classList.remove('has-value');
+    document.getElementById('rule-tool-panel').style.display = 'none';
+    document.getElementById('rule-tool-trigger').classList.remove('is-open');
+    document.getElementById('rule-tool-field').style.display = '';
+    document.getElementById('rule-modal').style.display = 'flex';
+  }
+
+  function closeRuleModal(event) {
+    if (event) event.stopPropagation();
+    document.getElementById('rule-modal').style.display = 'none';
+    document.getElementById('rule-tool-panel').style.display = 'none';
+  }
+
+  function updateRuleCharCounter() {
+    var val = document.getElementById('rule-instructions-input').value;
+    document.getElementById('rule-char-counter').textContent = val.length + '/1600';
+  }
+
+  function toggleRuleAssignAll() {
+    var checked = document.getElementById('rule-assign-all-checkbox').checked;
+    document.getElementById('rule-tool-field').style.display = checked ? 'none' : '';
+  }
+
+  function toggleRuleToolDropdown() {
+    var panel = document.getElementById('rule-tool-panel');
+    var trigger = document.getElementById('rule-tool-trigger');
+    var isOpen = panel.style.display !== 'none';
+    panel.style.display = isOpen ? 'none' : 'block';
+    trigger.classList.toggle('is-open', !isOpen);
+  }
+
+  function selectRuleTool(name) {
+    ruleToolSelection = name;
+    var lbl = document.getElementById('rule-tool-label');
+    lbl.textContent = name;
+    lbl.classList.add('has-value');
+    document.getElementById('rule-tool-panel').style.display = 'none';
+    document.getElementById('rule-tool-trigger').classList.remove('is-open');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  var RULE_MORE_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg>';
+
+  function addRule() {
+    var name = document.getElementById('rule-name-input').value.trim();
+    if (!name) {
+      document.getElementById('rule-name-input').focus();
+      return;
+    }
+    var desc = document.getElementById('rule-desc-input').value.trim();
+    var assignAll = document.getElementById('rule-assign-all-checkbox').checked;
+    var toolText = assignAll ? 'All tools' : (ruleToolSelection || '—');
+
+    var row = document.createElement('div');
+    row.className = 'rules-table-row';
+    row.innerHTML =
+      '<div class="rules-td-name" title="' + escapeHtml(name) + '">' + escapeHtml(name) + '</div>' +
+      '<div class="rules-td-desc" title="' + escapeHtml(desc) + '">' + escapeHtml(desc) + '</div>' +
+      '<div class="rules-td-tools">' + escapeHtml(toolText) + '</div>' +
+      '<div class="rules-td-status"><span class="rules-status-badge is-on">ON</span></div>' +
+      '<div class="rules-td-action"><button class="rules-action-btn" title="More">' + RULE_MORE_SVG + '</button></div>';
+
+    document.getElementById('rules-tbody').appendChild(row);
+    document.getElementById('rules-table').style.display = '';
+    document.getElementById('rules-empty-state').style.display = 'none';
+
+    closeRuleModal(null);
+  }
+
 </script>
+
+<!-- ── RULE MODAL ── -->
+<div class="modal-overlay" id="rule-modal" style="display:none;" onclick="closeRuleModal(event)">
+  <div class="rule-modal-dialog" onclick="event.stopPropagation()">
+    <div class="rule-modal-header">
+      <h2 class="rule-modal-title">Add rule</h2>
+      <button class="rule-modal-close-btn" onclick="closeRuleModal(event)" title="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12 2L2 12M2 2L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="rule-modal-body">
+      <!-- Name -->
+      <div class="rule-field-group">
+        <label class="rule-field-label" for="rule-name-input">Name</label>
+        <input class="rule-field-input" id="rule-name-input" type="text" placeholder="Type rule name">
+      </div>
+      <!-- Description -->
+      <div class="rule-field-group">
+        <label class="rule-field-label" for="rule-desc-input">Description</label>
+        <input class="rule-field-input" id="rule-desc-input" type="text" placeholder="Describe this rule functionality">
+        <span class="rule-field-helper">This description is for internal purpose only.</span>
+      </div>
+      <!-- Instructions -->
+      <div class="rule-field-group">
+        <label class="rule-field-label">Instructions</label>
+        <div class="rule-instructions-wrapper">
+          <textarea class="rule-instructions-textarea" id="rule-instructions-input" placeholder="Type instructions..." oninput="updateRuleCharCounter()"></textarea>
+          <div class="rule-toolbar">
+            <button class="rule-toolbar-btn" title="Bold"><b>B</b></button>
+            <button class="rule-toolbar-btn" title="Italic"><i style="font-style:italic;font-weight:400;">I</i></button>
+            <button class="rule-toolbar-btn" title="Underline"><u>U</u></button>
+            <button class="rule-toolbar-btn" title="Strikethrough"><s>S</s></button>
+            <button class="rule-toolbar-btn" title="Code" style="font-family:monospace;font-size:11px;">&lt;/&gt;</button>
+            <button class="rule-toolbar-btn" title="Text color" style="gap:2px;">
+              <span style="font-size:13px;font-weight:700;color:#474459;line-height:1;">A</span>
+              <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
+            </button>
+            <div class="rule-toolbar-sep"></div>
+            <button class="rule-toolbar-btn" title="Heading" style="gap:2px;font-size:12px;font-weight:700;">
+              <span>Tt</span>
+              <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
+            </button>
+            <div class="rule-toolbar-sep"></div>
+            <button class="rule-toolbar-btn" title="Bullet list">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="2" cy="4" r="1.5" fill="currentColor"/><circle cx="2" cy="8" r="1.5" fill="currentColor"/><circle cx="2" cy="12" r="1.5" fill="currentColor"/><path d="M5.5 4H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.5 8H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.5 12H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="rule-toolbar-btn" title="Numbered list">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.5 2H3V6H1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.5 9H3C3.55 9 4 9.45 4 10C4 10.55 3.55 11 3 11H1.5M1.5 11H3C3.55 11 4 11.45 4 12C4 12.55 3.55 13 3 13H1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 4H14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M6.5 11H14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </button>
+            <button class="rule-toolbar-btn" title="Indent">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 3H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 10H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 13H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 6L3 8.5L1 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="rule-toolbar-btn" title="Outdent">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 3H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 10H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 13H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4 6L2 8.5L4 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="rule-toolbar-sep"></div>
+            <button class="rule-toolbar-btn" title="Link" style="gap:2px;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.5 9.5L9.5 6.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10 7.5L11.5 6C12.6046 4.89543 12.6046 3.10457 11.5 2C10.3954 0.895431 8.60457 0.895431 7.5 2L6 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M6 8.5L4.5 10C3.39543 11.1046 3.39543 12.8954 4.5 14C5.60457 15.1046 7.39543 15.1046 8.5 14L10 12.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
+            </button>
+            <span class="rule-toolbar-counter" id="rule-char-counter">0/1600</span>
+          </div>
+        </div>
+      </div>
+      <!-- Assign to tool dropdown -->
+      <div class="rule-field-group" id="rule-tool-field">
+        <label class="rule-field-label">Assign to tool (optional)</label>
+        <div class="rule-tool-wrapper" id="rule-tool-wrapper">
+          <div class="rule-tool-trigger" id="rule-tool-trigger" onclick="toggleRuleToolDropdown()">
+            <span class="rule-tool-label" id="rule-tool-label">Select tool</span>
+            <span class="rule-tool-caret">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
+            </span>
+          </div>
+          <div class="rule-tool-panel" id="rule-tool-panel" style="display:none;">
+            <div class="rule-tool-item" onclick="selectRuleTool('Draft')">Draft</div>
+            <div class="rule-tool-item" onclick="selectRuleTool('Explain guide')">Explain guide</div>
+            <div class="rule-tool-item" onclick="selectRuleTool('Summarize')">Summarize</div>
+            <div class="rule-tool-item" onclick="selectRuleTool('Rephrase')">Rephrase</div>
+            <div class="rule-tool-item" onclick="selectRuleTool('Search')">Search</div>
+          </div>
+        </div>
+      </div>
+      <!-- Assign to all tools checkbox -->
+      <div class="rule-checkbox-row">
+        <input class="rule-checkbox" type="checkbox" id="rule-assign-all-checkbox" onchange="toggleRuleAssignAll()">
+        <label class="rule-checkbox-label" for="rule-assign-all-checkbox">Assign to all tools</label>
+      </div>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-footer">
+      <button class="modal-cancel-btn" onclick="closeRuleModal(event)">Cancel</button>
+      <button class="modal-save-btn" onclick="addRule()">Add</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── AGENT SELECTION MODAL ── -->
 <div class="modal-overlay" id="agent-modal" style="display:none;" onclick="closeAgentModal(event)">
