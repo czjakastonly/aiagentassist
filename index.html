@@ -753,20 +753,20 @@
     }
 
     .rule-modal-close-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
+      width: 24px;
+      height: 24px;
       border: none;
-      background: #F0EFF5;
+      background: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #474459;
       flex-shrink: 0;
-      transition: background 120ms ease;
+      padding: 0;
+      border-radius: 50%;
+      transition: opacity 120ms ease;
     }
-    .rule-modal-close-btn:hover { background: #E2E2E6; }
+    .rule-modal-close-btn:hover { opacity: 0.75; }
 
     .rule-modal-body {
       padding: 24px 32px 32px;
@@ -823,11 +823,28 @@
     }
     .rule-instructions-wrapper:focus-within { border-color: #474459; }
 
-    .rule-instructions-textarea {
-      width: 100%;
+    /* Wrap provides the placeholder via ::before */
+    .rule-editor-wrap {
+      position: relative;
+      min-height: 100px;
+    }
+    .rule-editor-wrap[data-empty="true"]::before {
+      content: attr(data-placeholder);
+      color: #848296;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      font-family: inherit;
+      pointer-events: none;
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+    }
+
+    .rule-instructions-editor {
       min-height: 100px;
       padding: 16px;
-      border: none;
       outline: none;
       font-family: inherit;
       font-size: 14px;
@@ -835,22 +852,34 @@
       line-height: 20px;
       color: #1C1A24;
       background: #FFFFFF;
-      resize: vertical;
-      display: block;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
-    .rule-instructions-textarea::placeholder { color: #848296; }
+    .rule-instructions-editor ul,
+    .rule-instructions-editor ol { margin: 4px 0; padding-left: 20px; }
+    .rule-instructions-editor li  { margin: 0; }
+    .rule-instructions-editor h2  { font-size: 16px; font-weight: 600; line-height: 24px; margin: 4px 0; }
+    .rule-instructions-editor pre { font-family: monospace; font-size: 13px; background: #F0EFF5; border-radius: 3px; padding: 8px 12px; }
+    .rule-instructions-editor code { font-family: monospace; font-size: 13px; background: #F0EFF5; border-radius: 3px; padding: 2px 4px; }
+    .rule-instructions-editor a { color: #e61168; text-decoration: underline; }
 
     .rule-toolbar {
       display: flex;
       align-items: center;
       height: 48px;
       border-top: 1px solid #E2E2E6;
-      padding: 0 12px;
+      padding: 0 24px;
+      justify-content: space-between;
+    }
+
+    .rule-toolbar-group {
+      display: flex;
+      align-items: center;
       gap: 2px;
     }
 
     .rule-toolbar-btn {
-      min-width: 28px;
+      width: 28px;
       height: 28px;
       border: none;
       background: none;
@@ -859,31 +888,52 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #706D84;
+      gap: 2px;
+      color: #474459;
       font-family: inherit;
       font-size: 13px;
-      font-weight: 700;
-      padding: 0 4px;
+      font-weight: 600;
+      padding: 0;
       transition: background 80ms ease;
       flex-shrink: 0;
+      position: relative;
     }
     .rule-toolbar-btn:hover { background: #F0EFF5; }
+    .rule-toolbar-btn.is-active { background: #E8E6F0; }
+
+    /* Wider buttons that combine icon + caret */
+    .rule-toolbar-btn-combo { width: auto; padding: 0 4px; }
+
+    .rule-color-icon {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+      border-bottom: 2px solid #474459;
+      padding-bottom: 1px;
+    }
+
+    .rule-toolbar-caret {
+      color: #706D84;
+      display: flex;
+      align-items: center;
+    }
 
     .rule-toolbar-sep {
       width: 1px;
-      height: 16px;
+      height: 20px;
       background: #E2E2E6;
-      margin: 0 4px;
       flex-shrink: 0;
     }
 
     .rule-toolbar-counter {
-      margin-left: auto;
       font-size: 12px;
       font-weight: 500;
       line-height: 16px;
       color: #217e5a;
       white-space: nowrap;
+      text-transform: uppercase;
+      min-width: 60px;
+      text-align: right;
     }
 
     .rule-checkbox-row {
@@ -3823,10 +3873,14 @@
 
   function openRuleModal() {
     document.getElementById('rule-name-input').value = '';
+    document.getElementById('rule-name-input').style.borderColor = '';
     document.getElementById('rule-desc-input').value = '';
-    document.getElementById('rule-instructions-input').value = '';
-    document.getElementById('rule-assign-all-checkbox').checked = false;
+    var editor = document.getElementById('rule-instructions-editor');
+    editor.innerHTML = '';
+    var wrap = document.getElementById('rule-editor-wrap');
+    wrap.dataset.empty = 'true';
     document.getElementById('rule-char-counter').textContent = '0/1600';
+    document.getElementById('rule-assign-all-checkbox').checked = false;
     ruleToolSelection = null;
     var lbl = document.getElementById('rule-tool-label');
     lbl.textContent = 'Select tool';
@@ -3835,6 +3889,7 @@
     document.getElementById('rule-tool-trigger').classList.remove('is-open');
     document.getElementById('rule-tool-field').style.display = '';
     document.getElementById('rule-modal').style.display = 'flex';
+    setTimeout(function() { document.getElementById('rule-name-input').focus(); }, 60);
   }
 
   function closeRuleModal(event) {
@@ -3843,9 +3898,77 @@
     document.getElementById('rule-tool-panel').style.display = 'none';
   }
 
-  function updateRuleCharCounter() {
-    var val = document.getElementById('rule-instructions-input').value;
-    document.getElementById('rule-char-counter').textContent = val.length + '/1600';
+  /* Called on contenteditable input — updates placeholder visibility and counter */
+  function handleEditorInput() {
+    var editor = document.getElementById('rule-instructions-editor');
+    var wrap = document.getElementById('rule-editor-wrap');
+    var text = editor.innerText || '';
+    wrap.dataset.empty = (!text.trim()) ? 'true' : '';
+    var count = text.replace(/\n$/, '').length;
+    document.getElementById('rule-char-counter').textContent = count + '/1600';
+  }
+
+  /* Tab = indent in lists, Shift+Tab = outdent */
+  function handleEditorKeydown(e) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      document.execCommand(e.shiftKey ? 'outdent' : 'indent', false, null);
+    }
+  }
+
+  /* Format commands — mousedown preventDefault on buttons keeps editor focus */
+  function applyFormat(command, value) {
+    var editor = document.getElementById('rule-instructions-editor');
+    editor.focus();
+    document.execCommand(command, false, value !== undefined ? value : null);
+    handleEditorInput();
+    updateToolbarState();
+  }
+
+  function applyHeading() {
+    var editor = document.getElementById('rule-instructions-editor');
+    editor.focus();
+    var sel = window.getSelection();
+    var inH2 = sel && sel.anchorNode &&
+      (function(n){ while(n && n !== editor){ if(n.nodeName==='H2') return true; n=n.parentNode; } return false; })(sel.anchorNode);
+    document.execCommand('formatBlock', false, inH2 ? 'p' : 'h2');
+    handleEditorInput();
+    updateToolbarState();
+  }
+
+  function applyCodeBlock() {
+    var editor = document.getElementById('rule-instructions-editor');
+    editor.focus();
+    var sel = window.getSelection();
+    var inPre = sel && sel.anchorNode &&
+      (function(n){ while(n && n !== editor){ if(n.nodeName==='PRE') return true; n=n.parentNode; } return false; })(sel.anchorNode);
+    document.execCommand('formatBlock', false, inPre ? 'p' : 'pre');
+    handleEditorInput();
+  }
+
+  function insertRuleLink() {
+    var editor = document.getElementById('rule-instructions-editor');
+    var url = window.prompt('Enter URL:', 'https://');
+    if (url && url !== 'https://') {
+      editor.focus();
+      document.execCommand('createLink', false, url);
+    }
+  }
+
+  /* Highlight active format buttons based on current selection */
+  function updateToolbarState() {
+    var cmds = { 'tb-bold': 'bold', 'tb-italic': 'italic', 'tb-underline': 'underline', 'tb-strike': 'strikeThrough' };
+    Object.keys(cmds).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('is-active', document.queryCommandState(cmds[id]));
+    });
+    var headingBtn = document.getElementById('tb-heading');
+    var sel = window.getSelection();
+    var editor = document.getElementById('rule-instructions-editor');
+    if (headingBtn && sel && sel.anchorNode) {
+      var inH2 = (function(n){ while(n && n !== editor){ if(n.nodeName==='H2') return true; n=n.parentNode; } return false; })(sel.anchorNode);
+      headingBtn.classList.toggle('is-active', inH2);
+    }
   }
 
   function toggleRuleAssignAll() {
@@ -3877,11 +4000,14 @@
   var RULE_MORE_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 9.5C1.67157 9.5 1 8.82843 1 8C1 7.17157 1.67157 6.5 2.5 6.5C3.32843 6.5 4 7.17157 4 8C4 8.82843 3.32843 9.5 2.5 9.5ZM8 9.5C7.17157 9.5 6.5 8.82843 6.5 8C6.5 7.17157 7.17157 6.5 8 6.5C8.82843 6.5 9.5 7.17157 9.5 8C9.5 8.82843 8.82843 9.5 8 9.5ZM13.5 9.5C12.6716 9.5 12 8.82843 12 8C12 7.17157 12.6716 6.5 13.5 6.5C14.3284 6.5 15 7.17157 15 8C15 8.82843 14.3284 9.5 13.5 9.5Z" fill="currentColor"/></svg>';
 
   function addRule() {
-    var name = document.getElementById('rule-name-input').value.trim();
+    var nameInput = document.getElementById('rule-name-input');
+    var name = nameInput.value.trim();
     if (!name) {
-      document.getElementById('rule-name-input').focus();
+      nameInput.style.borderColor = '#e61168';
+      nameInput.focus();
       return;
     }
+    nameInput.style.borderColor = '';
     var desc = document.getElementById('rule-desc-input').value.trim();
     var assignAll = document.getElementById('rule-assign-all-checkbox').checked;
     var toolText = assignAll ? 'All tools' : (ruleToolSelection || '—');
@@ -3907,66 +4033,114 @@
 <!-- ── RULE MODAL ── -->
 <div class="modal-overlay" id="rule-modal" style="display:none;" onclick="closeRuleModal(event)">
   <div class="rule-modal-dialog" onclick="event.stopPropagation()">
+
+    <!-- Header -->
     <div class="rule-modal-header">
       <h2 class="rule-modal-title">Add rule</h2>
       <button class="rule-modal-close-btn" onclick="closeRuleModal(event)" title="Close">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12 2L2 12M2 2L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="12" fill="#E3E5E9"/>
+          <path d="M15 9L9 15M9 9L15 15" stroke="#474459" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </button>
     </div>
+
+    <!-- Body -->
     <div class="rule-modal-body">
+
       <!-- Name -->
       <div class="rule-field-group">
         <label class="rule-field-label" for="rule-name-input">Name</label>
         <input class="rule-field-input" id="rule-name-input" type="text" placeholder="Type rule name">
       </div>
+
       <!-- Description -->
       <div class="rule-field-group">
         <label class="rule-field-label" for="rule-desc-input">Description</label>
         <input class="rule-field-input" id="rule-desc-input" type="text" placeholder="Describe this rule functionality">
         <span class="rule-field-helper">This description is for internal purpose only.</span>
       </div>
-      <!-- Instructions -->
+
+      <!-- Instructions (rich text editor) -->
       <div class="rule-field-group">
         <label class="rule-field-label">Instructions</label>
         <div class="rule-instructions-wrapper">
-          <textarea class="rule-instructions-textarea" id="rule-instructions-input" placeholder="Type instructions..." oninput="updateRuleCharCounter()"></textarea>
+          <div class="rule-editor-wrap" id="rule-editor-wrap" data-placeholder="Type instructions..." data-empty="true">
+            <div class="rule-instructions-editor"
+              id="rule-instructions-editor"
+              contenteditable="true"
+              oninput="handleEditorInput()"
+              onkeydown="handleEditorKeydown(event)">
+            </div>
+          </div>
+          <!-- Toolbar — mousedown preventDefault keeps editor focused -->
           <div class="rule-toolbar">
-            <button class="rule-toolbar-btn" title="Bold"><b>B</b></button>
-            <button class="rule-toolbar-btn" title="Italic"><i style="font-style:italic;font-weight:400;">I</i></button>
-            <button class="rule-toolbar-btn" title="Underline"><u>U</u></button>
-            <button class="rule-toolbar-btn" title="Strikethrough"><s>S</s></button>
-            <button class="rule-toolbar-btn" title="Code" style="font-family:monospace;font-size:11px;">&lt;/&gt;</button>
-            <button class="rule-toolbar-btn" title="Text color" style="gap:2px;">
-              <span style="font-size:13px;font-weight:700;color:#474459;line-height:1;">A</span>
-              <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
-            </button>
+            <!-- Group 1: inline formatting -->
+            <div class="rule-toolbar-group">
+              <button class="rule-toolbar-btn" id="tb-bold" title="Bold (Ctrl+B)" onmousedown="event.preventDefault()" onclick="applyFormat('bold')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4.5 8H9C10.1046 8 11 7.10457 11 6C11 4.89543 10.1046 4 9 4H4.5V8ZM4.5 8H9.5C10.6046 8 11.5 8.89543 11.5 10C11.5 11.1046 10.6046 12 9.5 12H4.5V8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="rule-toolbar-btn" id="tb-italic" title="Italic (Ctrl+I)" onmousedown="event.preventDefault()" onclick="applyFormat('italic')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3.5H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 12.5H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 3.5L7 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <button class="rule-toolbar-btn" id="tb-underline" title="Underline (Ctrl+U)" onmousedown="event.preventDefault()" onclick="applyFormat('underline')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 3V8C4 10.2091 5.79086 12 8 12C10.2091 12 12 10.2091 12 8V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2.5 14.5H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <button class="rule-toolbar-btn" id="tb-strike" title="Strikethrough" onmousedown="event.preventDefault()" onclick="applyFormat('strikeThrough')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 8H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5 5.5C5 4.67157 5.67157 4 6.5 4H9.5C10.3284 4 11 4.67157 11 5.5C11 6.32843 10.3284 7 9.5 7H6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 9H9.5C10.3284 9 11 9.67157 11 10.5C11 11.3284 10.3284 12 9.5 12H6.5C5.67157 12 5 11.3284 5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <button class="rule-toolbar-btn" id="tb-code" title="Code block" onmousedown="event.preventDefault()" onclick="applyCodeBlock()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5.5 5.5L2 8L5.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 5.5L14 8L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 3.5L7 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <button class="rule-toolbar-btn rule-toolbar-btn-combo" title="Text color" onmousedown="event.preventDefault()" onclick="document.getElementById('rule-color-input').click()">
+                <span class="rule-color-icon">A</span>
+                <svg class="rule-toolbar-caret" width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 1L4 5L7 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <input type="color" id="rule-color-input" value="#1C1A24" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none;" onchange="applyFormat('foreColor',this.value)">
+              </button>
+            </div>
+
             <div class="rule-toolbar-sep"></div>
-            <button class="rule-toolbar-btn" title="Heading" style="gap:2px;font-size:12px;font-weight:700;">
-              <span>Tt</span>
-              <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
-            </button>
+
+            <!-- Group 2: Heading -->
+            <div class="rule-toolbar-group">
+              <button class="rule-toolbar-btn rule-toolbar-btn-combo" id="tb-heading" title="Heading" onmousedown="event.preventDefault()" onclick="applyHeading()">
+                <span style="font-size:12px;font-weight:700;letter-spacing:-0.5px;">Tt</span>
+                <svg class="rule-toolbar-caret" width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 1L4 5L7 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+
             <div class="rule-toolbar-sep"></div>
-            <button class="rule-toolbar-btn" title="Bullet list">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="2" cy="4" r="1.5" fill="currentColor"/><circle cx="2" cy="8" r="1.5" fill="currentColor"/><circle cx="2" cy="12" r="1.5" fill="currentColor"/><path d="M5.5 4H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.5 8H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.5 12H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </button>
-            <button class="rule-toolbar-btn" title="Numbered list">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.5 2H3V6H1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.5 9H3C3.55 9 4 9.45 4 10C4 10.55 3.55 11 3 11H1.5M1.5 11H3C3.55 11 4 11.45 4 12C4 12.55 3.55 13 3 13H1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 4H14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M6.5 11H14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            </button>
-            <button class="rule-toolbar-btn" title="Indent">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 3H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 10H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 13H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 6L3 8.5L1 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <button class="rule-toolbar-btn" title="Outdent">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 3H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 10H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 13H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4 6L2 8.5L4 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
+
+            <!-- Group 3: lists + indent -->
+            <div class="rule-toolbar-group">
+              <button class="rule-toolbar-btn" id="tb-ul" title="Bullet list" onmousedown="event.preventDefault()" onclick="applyFormat('insertUnorderedList')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="2.5" cy="4.5" r="1.5" fill="currentColor"/><circle cx="2.5" cy="8.5" r="1.5" fill="currentColor"/><circle cx="2.5" cy="12.5" r="1.5" fill="currentColor"/><path d="M6 4.5H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 8.5H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 12.5H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <button class="rule-toolbar-btn" id="tb-ol" title="Numbered list" onmousedown="event.preventDefault()" onclick="applyFormat('insertOrderedList')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2.5H3.5V6.5H2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 9.5H4M2 13.5H4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 9.5H3.5C4.05 9.5 4.5 9.95 4.5 10.5C4.5 11.05 4.05 11.5 3.5 11.5H2M2 11.5H3.5C4.05 11.5 4.5 11.95 4.5 12.5C4.5 13.05 4.05 13.5 3.5 13.5H2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 4.5H14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 11.5H14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              </button>
+              <button class="rule-toolbar-btn" title="Indent" onmousedown="event.preventDefault()" onclick="applyFormat('indent')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 3H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 10H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 13H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 5.5L3.5 8L1 10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="rule-toolbar-btn" title="Outdent" onmousedown="event.preventDefault()" onclick="applyFormat('outdent')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 3H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 7H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 10H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1 13H15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 5.5L2 8L4.5 10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+
             <div class="rule-toolbar-sep"></div>
-            <button class="rule-toolbar-btn" title="Link" style="gap:2px;">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.5 9.5L9.5 6.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10 7.5L11.5 6C12.6046 4.89543 12.6046 3.10457 11.5 2C10.3954 0.895431 8.60457 0.895431 7.5 2L6 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M6 8.5L4.5 10C3.39543 11.1046 3.39543 12.8954 4.5 14C5.60457 15.1046 7.39543 15.1046 8.5 14L10 12.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-              <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.79961 7.89888L3.08301 4.58938C2.97233 4.45455 2.97233 4.23595 3.08301 4.10112C3.13615 4.03637 3.20824 4 3.2834 4L8.7166 4C8.87312 4 9 4.15457 9 4.34525C9 4.43682 8.97014 4.52463 8.91699 4.58938L6.20039 7.89888C6.08972 8.03371 5.91028 8.03371 5.79961 7.89888Z" fill="currentColor"/></svg>
-            </button>
-            <span class="rule-toolbar-counter" id="rule-char-counter">0/1600</span>
+
+            <!-- Group 4: link + counter -->
+            <div class="rule-toolbar-group">
+              <button class="rule-toolbar-btn rule-toolbar-btn-combo" title="Insert link" onmousedown="event.preventDefault()" onclick="insertRuleLink()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.5 9.5L9.5 6.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10.5 7.5L12 6C13.1046 4.89543 13.1046 3.10457 12 2C10.8954 0.895431 9.10457 0.895431 8 2L6.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5.5 8.5L4 10C2.89543 11.1046 2.89543 12.8954 4 14C5.10457 15.1046 6.89543 15.1046 8 14L9.5 12.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                <svg class="rule-toolbar-caret" width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 1L4 5L7 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <span class="rule-toolbar-counter" id="rule-char-counter">0/1600</span>
+            </div>
           </div>
         </div>
       </div>
+
       <!-- Assign to tool dropdown -->
       <div class="rule-field-group" id="rule-tool-field">
         <label class="rule-field-label">Assign to tool (optional)</label>
@@ -3986,12 +4160,15 @@
           </div>
         </div>
       </div>
-      <!-- Assign to all tools checkbox -->
+
+      <!-- Checkbox -->
       <div class="rule-checkbox-row">
         <input class="rule-checkbox" type="checkbox" id="rule-assign-all-checkbox" onchange="toggleRuleAssignAll()">
         <label class="rule-checkbox-label" for="rule-assign-all-checkbox">Assign to all tools</label>
       </div>
-    </div>
+
+    </div><!-- /body -->
+
     <div class="modal-divider"></div>
     <div class="modal-footer">
       <button class="modal-cancel-btn" onclick="closeRuleModal(event)">Cancel</button>
