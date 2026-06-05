@@ -805,7 +805,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      overflow-y: auto;
+      overflow: visible;
     }
 
     .rule-field-group {
@@ -818,7 +818,7 @@
       font-size: 12px;
       font-weight: 500;
       line-height: 16px;
-      color: #706D84;
+      color: var(--color-text-subtle);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -832,28 +832,28 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: #1C1A24;
-      background: #FFFFFF;
+      color: var(--color-text-dark);
+      background: var(--color-bg-white);
       outline: none;
       transition: border-color 120ms ease;
     }
-    .rule-field-input:focus { border-color: #474459; }
-    .rule-field-input::placeholder { color: #848296; }
+    .rule-field-input:focus { border-color: var(--color-text-default); }
+    .rule-field-input::placeholder { color: var(--color-text-placeholder); }
 
     .rule-field-helper {
       font-size: 12px;
       font-weight: 400;
       line-height: 16px;
-      color: #706D84;
+      color: var(--color-text-subtle);
     }
 
     .rule-instructions-wrapper {
-      border: 1px solid #C1C0CB;
+      border: 1px solid var(--color-border-default);
       border-radius: 4px;
       overflow: hidden;
       transition: border-color 120ms ease;
     }
-    .rule-instructions-wrapper:focus-within { border-color: #474459; }
+    .rule-instructions-wrapper:focus-within { border-color: var(--color-text-default); }
 
     /* Wrap provides the placeholder via ::before */
     .rule-editor-wrap {
@@ -862,7 +862,7 @@
     }
     .rule-editor-wrap[data-empty="true"]::before {
       content: attr(data-placeholder);
-      color: #848296;
+      color: var(--color-text-placeholder);
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
@@ -882,8 +882,8 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: #1C1A24;
-      background: #FFFFFF;
+      color: var(--color-text-dark);
+      background: var(--color-bg-white);
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
@@ -891,15 +891,15 @@
     .rule-instructions-editor ol { margin: 4px 0; padding-left: 20px; }
     .rule-instructions-editor li  { margin: 0; }
     .rule-instructions-editor h2  { font-size: 16px; font-weight: 600; line-height: 24px; margin: 4px 0; }
-    .rule-instructions-editor pre { font-family: monospace; font-size: 13px; background: #F0EFF5; border-radius: 3px; padding: 8px 12px; }
-    .rule-instructions-editor code { font-family: monospace; font-size: 13px; background: #F0EFF5; border-radius: 3px; padding: 2px 4px; }
-    .rule-instructions-editor a { color: #e61168; text-decoration: underline; }
+    .rule-instructions-editor pre { font-family: monospace; font-size: 13px; background: var(--color-bg-light); border-radius: 3px; padding: 8px 12px; }
+    .rule-instructions-editor code { font-family: monospace; font-size: 13px; background: var(--color-bg-light); border-radius: 3px; padding: 2px 4px; }
+    .rule-instructions-editor a { color: var(--color-primary); text-decoration: underline; }
 
     .rule-toolbar {
       display: flex;
       align-items: center;
       height: 48px;
-      border-top: 1px solid #E2E2E6;
+      border-top: 1px solid var(--color-border-subtle);
       padding: 0 24px;
       justify-content: space-between;
     }
@@ -921,7 +921,7 @@
       align-items: center;
       justify-content: center;
       gap: 2px;
-      color: #474459;
+      color: var(--color-text-default);
       font-family: inherit;
       font-size: 13px;
       font-weight: 600;
@@ -930,8 +930,8 @@
       flex-shrink: 0;
       position: relative;
     }
-    .rule-toolbar-btn:hover { background: #F0EFF5; }
-    .rule-toolbar-btn.is-active { background: #E8E6F0; }
+    .rule-toolbar-btn:hover { background: var(--color-bg-light); }
+    .rule-toolbar-btn.is-active { background: var(--color-bg-selected); }
 
     /* Wider buttons that combine icon + caret */
     .rule-toolbar-btn-combo { width: auto; padding: 0 4px; }
@@ -940,12 +940,12 @@
       font-size: 13px;
       font-weight: 700;
       line-height: 1;
-      border-bottom: 2px solid #474459;
+      border-bottom: 2px solid var(--color-text-default);
       padding-bottom: 1px;
     }
 
     .rule-toolbar-caret {
-      color: #706D84;
+      color: var(--color-text-subtle);
       display: flex;
       align-items: center;
     }
@@ -953,7 +953,7 @@
     .rule-toolbar-sep {
       width: 1px;
       height: 20px;
-      background: #E2E2E6;
+      background: var(--color-border-subtle);
       flex-shrink: 0;
     }
 
@@ -961,7 +961,7 @@
       font-size: 12px;
       font-weight: 500;
       line-height: 16px;
-      color: #217e5a;
+      color: var(--color-green-dark);
       white-space: nowrap;
       text-transform: uppercase;
       min-width: 60px;
@@ -977,19 +977,19 @@
     .rule-checkbox {
       width: 16px;
       height: 16px;
-      border: 1.5px solid #C1C0CB;
+      border: 1.5px solid var(--color-border-default);
       border-radius: 3px;
       appearance: none;
       -webkit-appearance: none;
       cursor: pointer;
-      background: #FFFFFF;
+      background: var(--color-bg-white);
       flex-shrink: 0;
       position: relative;
       transition: border-color 120ms ease, background 120ms ease;
     }
     .rule-checkbox:checked {
-      background: #e61168;
-      border-color: #e61168;
+      background: var(--color-primary);
+      border-color: var(--color-primary);
     }
     .rule-checkbox:checked::after {
       content: '';
@@ -1007,7 +1007,7 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: #474459;
+      color: var(--color-text-default);
       cursor: pointer;
     }
 
@@ -1019,36 +1019,36 @@
       justify-content: space-between;
       height: 40px;
       padding: 0 12px;
-      border: 1px solid #C1C0CB;
+      border: 1px solid var(--color-border-default);
       border-radius: 4px;
       cursor: pointer;
-      background: #FFFFFF;
+      background: var(--color-bg-white);
       transition: border-color 120ms ease;
       user-select: none;
     }
-    .rule-tool-trigger:hover { border-color: #848296; }
-    .rule-tool-trigger.is-open { border-color: #474459; }
+    .rule-tool-trigger:hover { border-color: var(--color-border-hover); }
+    .rule-tool-trigger.is-open { border-color: var(--color-text-default); }
 
     .rule-tool-label {
       font-size: 14px;
       font-weight: 400;
       line-height: 24px;
-      color: #848296;
+      color: var(--color-text-placeholder);
       flex: 1;
     }
-    .rule-tool-label.has-value { color: #1C1A24; }
+    .rule-tool-label.has-value { color: var(--color-text-dark); }
 
-    .rule-tool-caret { flex-shrink: 0; color: #706D84; }
+    .rule-tool-caret { flex-shrink: 0; color: var(--color-text-subtle); }
 
     .rule-tool-panel {
       position: absolute;
       top: calc(100% + 4px);
       left: 0;
       right: 0;
-      background: #FFFFFF;
+      background: var(--color-bg-white);
       border-radius: 4px;
-      box-shadow: 0px 0px 8px rgba(0,0,0,0.08), 0px 8px 8px rgba(0,0,0,0.08);
-      z-index: 20;
+      box-shadow: var(--shadow-dropdown);
+      z-index: 100;
       overflow: hidden;
       padding: 4px 0;
     }
@@ -1060,11 +1060,11 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: #1C1A24;
+      color: var(--color-text-dark);
       cursor: pointer;
       transition: background 80ms ease;
     }
-    .rule-tool-item:hover { background: #F0EFF5; }
+    .rule-tool-item:hover { background: var(--color-bg-light); }
 
     /* =====================================================
        RULES TABLE
