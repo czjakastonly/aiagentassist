@@ -5,6 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Assist Settings — Recommendation Filters</title>
   <style>
+    :root {
+      --color-text-dark:        #1C1A24;
+      --color-text-default:     #474459;
+      --color-text-subtle:      #706D84;
+      --color-text-placeholder: #848296;
+      --color-text-light:       #5D6169;
+      --color-text-success:     #217E5A;
+
+      --color-border-default:   #C1C0CB;
+      --color-border-hover:     #848296;
+      --color-border-subtle:    #E2E2E6;
+      --color-border-silver:    #D3D5DA;
+
+      --color-bg-white:         #FFFFFF;
+      --color-bg-hover:         #F7F7F9;
+      --color-bg-pale:          #F8F8F9;
+      --color-bg-light:         #F0EFF5;
+      --color-bg-selected:      #E8E6F0;
+      --color-bg-close:         #E3E5E9;
+
+      --color-primary:          #E61168;
+      --color-primary-hover:    #C8005A;
+      --color-green:            #2C9F72;
+      --color-green-dark:       #217E5A;
+      --color-brand-dark:       #262144;
+      --color-brand-overlay:    rgba(38,33,68,0.6);
+      --color-brand-pressed:    rgba(38,33,68,0.10);
+
+      --shadow-card:            0px 0px 2px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.08);
+      --shadow-dropdown:        0 2px 8px rgba(0,0,0,0.12);
+    }
+
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -577,9 +609,9 @@
     ===================================================== */
 
     .rules-box {
-      background: #FFFFFF;
+      background: var(--color-bg-white);
       border-radius: 4px;
-      box-shadow: 0px 0px 2px rgba(0,0,0,0.08), 0px 2px 2px rgba(0,0,0,0.08);
+      box-shadow: var(--shadow-card);
       padding-bottom: 8px;
     }
 
@@ -588,7 +620,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 22px 24px 22px 20px;
-      border-bottom: 1px solid #E2E2E6;
+      border-bottom: 1px solid var(--color-border-subtle);
     }
 
     .add-rule-btn {
@@ -609,9 +641,9 @@
       width: 24px;
       height: 24px;
       border-radius: 12px;
-      border: 1px solid #D3D5DA;
-      background: #FFFFFF;
-      color: #5D6169;
+      border: 1px solid var(--color-border-silver);
+      background: var(--color-bg-white);
+      color: var(--color-text-light);
       flex-shrink: 0;
       box-sizing: border-box;
     }
@@ -620,7 +652,7 @@
       font-size: 14px;
       font-weight: 500;
       line-height: 14px;
-      color: #5D6169;
+      color: var(--color-text-light);
     }
 
     .rules-topbar-right {
@@ -639,7 +671,7 @@
       font-size: 12px;
       font-weight: 400;
       line-height: 20px;
-      color: #474459;
+      color: var(--color-text-default);
       white-space: nowrap;
     }
 
@@ -653,21 +685,21 @@
       width: 24px;
       height: 24px;
       border-radius: 12px;
-      border: 1px solid #E2E2E6;
-      background: #FFFFFF;
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-bg-white);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: #848296;
+      color: var(--color-border-hover);
       padding: 0;
       flex-shrink: 0;
       transition: border-color 120ms ease, background 120ms ease;
     }
 
     .page-btn:hover {
-      border-color: #C1C0CB;
-      background: #F8F8F9;
+      border-color: var(--color-border-default);
+      background: var(--color-bg-pale);
     }
 
     .rules-search {
@@ -676,15 +708,15 @@
       gap: 12px;
       height: 40px;
       padding: 8px 12px;
-      border: 1px solid #C1C0CB;
+      border: 1px solid var(--color-border-default);
       border-radius: 4px;
-      background: #FFFFFF;
+      background: var(--color-bg-white);
       width: 218px;
       flex-shrink: 0;
       overflow: hidden;
     }
 
-    .rules-search svg { flex-shrink: 0; color: #706D84; }
+    .rules-search svg { flex-shrink: 0; color: var(--color-text-subtle); }
 
     .rules-search-input {
       flex: 1;
@@ -695,11 +727,11 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: #1C1A24;
+      color: var(--color-text-dark);
       background: transparent;
     }
 
-    .rules-search-input::placeholder { color: #706D84; }
+    .rules-search-input::placeholder { color: var(--color-text-subtle); }
 
     /* Rules empty state */
     .rules-empty-state {
@@ -715,7 +747,7 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: #474459;
+      color: var(--color-text-default);
       white-space: nowrap;
     }
 
@@ -724,7 +756,7 @@
     ===================================================== */
 
     .rule-modal-dialog {
-      background: #FFFFFF;
+      background: var(--color-bg-white);
       border-radius: 8px;
       width: 640px;
       max-width: calc(100vw - 32px);
@@ -737,9 +769,9 @@
 
     .rule-modal-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      padding: 32px 32px 0;
+      padding: 32px;
       flex-shrink: 0;
     }
 
@@ -749,7 +781,7 @@
       font-weight: 400;
       line-height: 32px;
       letter-spacing: -0.48px;
-      color: #1C1A24;
+      color: var(--color-text-dark);
     }
 
     .rule-modal-close-btn {
@@ -1046,7 +1078,7 @@
       align-items: stretch;
       height: 56px;
       padding: 0 16px;
-      border-bottom: 1px solid #E2E2E6;
+      border-bottom: 1px solid var(--color-border-subtle);
     }
 
     .rules-th {
@@ -1057,7 +1089,7 @@
       line-height: 16px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #706D84;
+      color: var(--color-text-subtle);
       flex-shrink: 0;
       padding: 0 16px;
     }
@@ -1075,8 +1107,9 @@
       padding: 0 16px;
       border-radius: 4px;
       transition: background 80ms ease;
+      position: relative;
     }
-    .rules-table-row:hover { background: #F7F7F9; }
+    .rules-table-row:hover { background: var(--color-bg-hover); }
 
     /* Each cell mirrors its header column width + 16px padding on each side */
     .rules-td-name {
@@ -1086,7 +1119,7 @@
       font-size: 14px;
       font-weight: 500;
       line-height: 20px;
-      color: #1C1A24;
+      color: var(--color-text-dark);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1099,7 +1132,7 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: #706D84;
+      color: var(--color-text-subtle);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1112,7 +1145,7 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 24px;
-      color: #474459;
+      color: var(--color-text-default);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1132,13 +1165,13 @@
       font-size: 11px;
       font-weight: 500;
       line-height: 16px;
-      color: #FFFFFF;
+      color: var(--color-bg-white);
       white-space: nowrap;
       min-width: 26px;
       text-align: center;
     }
-    .rules-status-badge.is-on  { background: #2C9F72; }
-    .rules-status-badge.is-off { background: #848296; }
+    .rules-status-badge.is-on  { background: var(--color-green); }
+    .rules-status-badge.is-off { background: var(--color-border-hover); }
 
     .rules-td-action {
       width: 60px;
@@ -1147,6 +1180,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
 
     .rules-action-btn {
@@ -1159,12 +1193,48 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #706D84;
+      color: var(--color-text-subtle);
       visibility: hidden;
       transition: background 80ms ease;
     }
     .rules-table-row:hover .rules-action-btn { visibility: visible; }
-    .rules-action-btn:hover { background: #F0EFF5; }
+    .rules-action-btn:hover { background: var(--color-bg-light); }
+    .rules-action-btn.is-active { background: var(--color-brand-pressed); visibility: visible; }
+
+    /* Row context menu */
+    .rules-row-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% - 8px);
+      right: 8px;
+      background: var(--color-bg-white);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: 4px;
+      box-shadow: var(--shadow-dropdown);
+      z-index: 20;
+      min-width: 120px;
+      padding: 4px 0;
+    }
+    .rules-row-menu.is-open { display: block; }
+
+    .rules-row-menu-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--color-text-default);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: background 80ms ease;
+    }
+    .rules-row-menu-item:hover { background: var(--color-bg-hover); }
+    .rules-row-menu-item-danger { color: var(--color-primary); }
 
     /* =====================================================
        AGENT MODAL
@@ -4003,7 +4073,7 @@
     var nameInput = document.getElementById('rule-name-input');
     var name = nameInput.value.trim();
     if (!name) {
-      nameInput.style.borderColor = '#e61168';
+      nameInput.style.borderColor = 'var(--color-primary)';
       nameInput.focus();
       return;
     }
@@ -4019,13 +4089,56 @@
       '<div class="rules-td-desc" title="' + escapeHtml(desc) + '">' + escapeHtml(desc) + '</div>' +
       '<div class="rules-td-tools">' + escapeHtml(toolText) + '</div>' +
       '<div class="rules-td-status"><span class="rules-status-badge is-on">ON</span></div>' +
-      '<div class="rules-td-action"><button class="rules-action-btn" title="More">' + RULE_MORE_SVG + '</button></div>';
+      '<div class="rules-td-action">' +
+        '<button class="rules-action-btn" title="More" onclick="toggleRowMenu(event,this)">' + RULE_MORE_SVG + '</button>' +
+        '<div class="rules-row-menu">' +
+          '<button class="rules-row-menu-item" onclick="editRule(event,this)">Edit</button>' +
+          '<button class="rules-row-menu-item rules-row-menu-item-danger" onclick="deleteRule(event,this)">Delete</button>' +
+        '</div>' +
+      '</div>';
 
     document.getElementById('rules-tbody').appendChild(row);
     document.getElementById('rules-table').style.display = '';
     document.getElementById('rules-empty-state').style.display = 'none';
 
     closeRuleModal(null);
+  }
+
+  function toggleRowMenu(e, btn) {
+    e.stopPropagation();
+    var menu = btn.nextElementSibling;
+    var isOpen = menu.classList.contains('is-open');
+    closeAllRowMenus();
+    if (!isOpen) {
+      menu.classList.add('is-open');
+      btn.classList.add('is-active');
+      document.addEventListener('click', closeAllRowMenus, { once: true });
+    }
+  }
+
+  function closeAllRowMenus() {
+    document.querySelectorAll('.rules-row-menu.is-open').forEach(function(m) {
+      m.classList.remove('is-open');
+      if (m.previousElementSibling) m.previousElementSibling.classList.remove('is-active');
+    });
+  }
+
+  function editRule(e, btn) {
+    e.stopPropagation();
+    closeAllRowMenus();
+  }
+
+  function deleteRule(e, btn) {
+    e.stopPropagation();
+    var row = btn.closest('.rules-table-row');
+    if (row) {
+      row.remove();
+      var tbody = document.getElementById('rules-tbody');
+      if (tbody && tbody.children.length === 0) {
+        document.getElementById('rules-table').style.display = 'none';
+        document.getElementById('rules-empty-state').style.display = '';
+      }
+    }
   }
 
 </script>
@@ -4065,7 +4178,7 @@
       <div class="rule-field-group">
         <label class="rule-field-label">Instructions</label>
         <div class="rule-instructions-wrapper">
-          <div class="rule-editor-wrap" id="rule-editor-wrap" data-placeholder="Type instructions..." data-empty="true">
+          <div class="rule-editor-wrap" id="rule-editor-wrap" data-placeholder="Enter natural-language rules the AI should follow" data-empty="true">
             <div class="rule-instructions-editor"
               id="rule-instructions-editor"
               contenteditable="true"
